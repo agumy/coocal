@@ -1,3 +1,4 @@
+import "bootstrap/dist/css/bootstrap.min.css";
 import {
   addDays,
   differenceInDays,
@@ -7,12 +8,29 @@ import {
   startOfMonth,
   startOfWeek,
 } from "date-fns";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Popover from "react-bootstrap/Popover";
+import { EventRegister } from "./EventRegister";
 
 const arrayChunk = <T extends any[]>([...array]: T, size = 1): T[] => {
   return array.reduce(
     (acc, value, index) =>
       index % size ? acc : [...acc, array.slice(index, index + size)],
     []
+  );
+};
+
+const PopoverComponent = (props: any) => {
+  return (
+    <Popover
+      id="popover-basic"
+      {...props}
+      className="shadow-md bg-blue-100 w-full"
+    >
+      <Popover.Content className="h-full w-full">
+        <EventRegister />
+      </Popover.Content>
+    </Popover>
   );
 };
 
@@ -51,16 +69,23 @@ export const Calendar = () => {
         {monthCalendar.map((weekCalendar, i) => (
           <div key={i} className="flex h-full w-full">
             {weekCalendar.map((date, j) => (
-              <div
-                tabIndex={0}
-                role="button"
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                placement="auto-start"
+                overlay={PopoverComponent}
                 key={date.toISOString()}
-                className="flex items-start justify-center w-1/7 p-1 h-full text-gray-500 border-gray-300 border-l border-b last:border-r"
               >
-                {date.toLocaleDateString("en-US", {
-                  day: "numeric",
-                })}
-              </div>
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="flex items-start justify-center w-1/7 p-1 h-full text-gray-500 border-gray-300 border-l border-b last:border-r"
+                >
+                  {date.toLocaleDateString("en-US", {
+                    day: "numeric",
+                  })}
+                </div>
+              </OverlayTrigger>
             ))}
           </div>
         ))}

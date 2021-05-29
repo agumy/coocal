@@ -36,7 +36,10 @@ export const Calendar = () => {
     <div className="flex flex-col h-full w-full p-4">
       <div className="w-full h-7 flex">
         {[...Array(7).keys()].map((n) => (
-          <div className="w-1/7 flex items-center justify-center text-gray-400 border-gray-300 border border-r-0 border-b-0 last:border-r">
+          <div
+            key={n}
+            className="w-1/7 flex items-center justify-center text-gray-400 border-gray-300 border border-r-0 border-b-0 last:border-r"
+          >
             {setDay(new Date(), n).toLocaleDateString(
               global.navigator?.language,
               { weekday: "short" }
@@ -45,10 +48,15 @@ export const Calendar = () => {
         ))}
       </div>
       <div className="flex flex-col h-full w-full">
-        {monthCalendar.map((weekCalendar) => (
-          <div className="flex h-full w-full">
-            {weekCalendar.map((date) => (
-              <div className="flex items-start justify-center w-1/7 p-1 h-full text-gray-500 border-gray-300 border-l border-b last:border-r">
+        {monthCalendar.map((weekCalendar, i) => (
+          <div key={i} className="flex h-full w-full">
+            {weekCalendar.map((date, j) => (
+              <div
+                tabIndex={0}
+                role="button"
+                key={date.toISOString()}
+                className="flex items-start justify-center w-1/7 p-1 h-full text-gray-500 border-gray-300 border-l border-b last:border-r"
+              >
                 {date.toLocaleDateString("en-US", {
                   day: "numeric",
                 })}

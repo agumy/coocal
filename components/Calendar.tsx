@@ -1,24 +1,9 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import {
-  addDays,
-  differenceInDays,
-  lastDayOfMonth,
-  lastDayOfWeek,
-  setDay,
-  startOfMonth,
-  startOfWeek,
-} from "date-fns";
+import { setDay } from "date-fns";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
+import { useMonthlyCalendar } from "../hooks/useMonthlyCalendar";
 import { EventRegister } from "./EventRegister";
-
-const arrayChunk = <T extends any[]>([...array]: T, size = 1): T[] => {
-  return array.reduce(
-    (acc, value, index) =>
-      index % size ? acc : [...acc, array.slice(index, index + size)],
-    []
-  );
-};
 
 const PopoverComponent = (props: any) => {
   return (
@@ -35,20 +20,7 @@ const PopoverComponent = (props: any) => {
 };
 
 export const Calendar = () => {
-  const monthCalendar = (() => {
-    const today = new Date();
-    const first = startOfMonth(today);
-    const last = lastDayOfMonth(today);
-    const startDateOfWeek = startOfWeek(first);
-    const lastDateOfWeek = lastDayOfWeek(last);
-    const diff = differenceInDays(lastDateOfWeek, startDateOfWeek);
-
-    const calendar = [...Array(diff + 1).keys()].map((n) =>
-      addDays(startDateOfWeek, n)
-    );
-
-    return arrayChunk(calendar, 7);
-  })();
+  const monthCalendar = useMonthlyCalendar();
 
   return (
     <div className="flex flex-col h-full w-full p-4">

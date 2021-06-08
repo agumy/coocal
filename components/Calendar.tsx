@@ -10,6 +10,7 @@ const PopoverComponent = (props: any) => {
     <Popover
       id="popover-basic"
       {...props}
+      style={{ ...props.style, maxWidth: "400px" }}
       className="shadow-md bg-blue-100 w-full"
     >
       <Popover.Content className="h-full w-full">

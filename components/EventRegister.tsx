@@ -5,9 +5,7 @@ import { useForm } from "react-hook-form";
 const useUrl = (initialState: string = "") => {
   const [url, __setUrl] = useState(initialState);
 
-  const setUrl = useCallback((e: SyntheticEvent<HTMLInputElement>) => {
-    __setUrl(e.currentTarget.value);
-  }, []);
+  const { handleSubmit, register, getValues, setValue } = useForm();
 
   return [url, setUrl] as const;
 };
@@ -22,14 +20,19 @@ export const EventRegister = () => {
   //   { enabled: false }
   // );
 
-  // const onClick = useCallback(() => {
-  //   refetch();
-  // }, [refetch]);
+  const onClick = useCallback(() => {
+    refetch();
+  }, [refetch]);
 
   return (
     <div className="flex flex-col h-full w-full gap-2">
       <div className="flex w-full h-11">
-        <input type="text" placeholder="献立" className="p-2 w-full text-lg" />
+        <input
+          type="text"
+          placeholder="献立"
+          className="p-2 w-full text-lg"
+          {...register("title")}
+        />
       </div>
       <div className="h-full w-full text-xs">
         <div className="w-full flex items-center gap-2 h-6">
@@ -37,8 +40,12 @@ export const EventRegister = () => {
             type="text"
             placeholder="URL"
             className="p-2 h-full w-full border rounded"
+            {...register("url")}
           />
-          <button className="border px-2 h-full rounded text-gray-500 whitespace-nowrap">
+          <button
+            className="border px-2 h-full rounded text-gray-500 whitespace-nowrap"
+            onClick={onClick}
+          >
             レシピからインポート
           </button>
         </div>

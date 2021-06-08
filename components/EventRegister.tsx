@@ -1,24 +1,28 @@
-import { SyntheticEvent, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { useQuery } from "react-query";
 import { useForm } from "react-hook-form";
 
-const useUrl = (initialState: string = "") => {
-  const [url, __setUrl] = useState(initialState);
+export const EventRegister = () => {
+  const [ingredients, setIngredients] = useState([{ name: "", amount: "" }]);
 
   const { handleSubmit, register, getValues, setValue } = useForm();
 
-  return [url, setUrl] as const;
-};
-
-export const EventRegister = () => {
-  // const { isLoading, error, data, refetch } = useQuery(
-  //   `ingredients-${url}`,
-  //   () =>
-  //     fetch(`http://localhost:3000/api/ingredient?url=${url}`).then((res) =>
-  //       res.json()
-  //     ),
-  //   { enabled: false }
-  // );
+  const { isLoading, error, data, refetch } = useQuery(
+    `ingredients`,
+    () =>
+      fetch(
+        `http://localhost:3000/api/ingredient?url=${getValues("url")}`
+      ).then((res) => res.json()),
+    {
+      enabled: false,
+      onSuccess: (data) => {
+        if (data) {
+          setIngredients((state) => [...state, ...data.ingredientList]);
+          setValue("title", data.title);
+        }
+      },
+    }
+  );
 
   const onClick = useCallback(() => {
     refetch();
@@ -52,17 +56,19 @@ export const EventRegister = () => {
       </div>
       <div className="h-full w-full text-xs">
         <ol className="flex flex-col p-0 gap-1">
-          {[...Array(3).keys()].map((n) => (
-            <li key={n} className="flex gap-2">
+          {ingredients.map((ingredient, i) => (
+            <li key={i} className="flex gap-2">
               <input
                 className="py-1 px-2 w-full"
                 type="text"
                 placeholder="材料"
+                value={ingredient.name}
               />
               <input
                 className="py-1 px-2 w-16"
                 type="text"
                 placeholder="数量"
+                value={ingredient.amount}
               />
             </li>
           ))}

@@ -17,19 +17,25 @@ export const EventRegister = () => {
       enabled: false,
       onSuccess: (data) => {
         if (data) {
-          setIngredients((state) => [...state, ...data.ingredientList]);
+          setIngredients((state) =>
+            [...state, ...data.ingredientList].filter((i) => i.name || i.amount)
+          );
           setValue("title", data.title);
         }
       },
     }
   );
 
-  const onClick = useCallback(() => {
+  const onClickImport = useCallback(() => {
     refetch();
   }, [refetch]);
 
+  const onClickAddRow = useCallback(() => {
+    setIngredients((state) => [...state, { name: "", amount: "" }]);
+  }, [setIngredients]);
+
   return (
-    <div className="flex flex-col h-full w-full gap-2">
+    <div className="flex flex-col h-full w-full gap-3">
       <div className="flex w-full h-11">
         <input
           type="text"
@@ -48,7 +54,7 @@ export const EventRegister = () => {
           />
           <button
             className="border px-2 h-full rounded text-gray-500 whitespace-nowrap"
-            onClick={onClick}
+            onClick={onClickImport}
           >
             レシピからインポート
           </button>
@@ -57,25 +63,31 @@ export const EventRegister = () => {
       <div className="h-full w-full text-xs">
         <ol className="flex flex-col p-0 gap-1">
           {ingredients.map((ingredient, i) => (
-            <li key={i} className="flex gap-2">
+            <li key={i} className="flex items-center gap-2">
+              <input type="checkbox" {...register(`shouldBuy.${i}`)} />
               <input
-                className="py-1 px-2 w-full"
+                className="py-1 px-2 w-full border rounded"
                 type="text"
                 placeholder="材料"
                 value={ingredient.name}
+                {...register(`name.${i}`)}
               />
               <input
-                className="py-1 px-2 w-16"
+                className="py-1 px-2 w-16 border rounded"
                 type="text"
                 placeholder="数量"
                 value={ingredient.amount}
+                {...register(`amount.${i}`)}
               />
             </li>
           ))}
         </ol>
       </div>
       <div className="flex justify-between items-center h-full">
-        <button className="rounded border px-3 py-1 text-gray-500">
+        <button
+          className="rounded border px-3 py-1 text-gray-500"
+          onClick={onClickAddRow}
+        >
           材料を追加
         </button>
         <button className="rounded px-3 py-1 bg-blue-500 text-gray-100">

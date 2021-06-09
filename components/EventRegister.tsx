@@ -1,11 +1,32 @@
 import { useCallback, useState } from "react";
 import { useQuery } from "react-query";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
+
+type MenuFormValue = {
+  ingredientList: {
+    name: string;
+    amount: string;
+    hasThis: boolean;
+  }[];
+  title: string;
+  url: string;
+};
 
 export const EventRegister = () => {
-  const [ingredients, setIngredients] = useState([{ name: "", amount: "" }]);
+  const { register, control, getValues } = useForm<MenuFormValue>({
+    defaultValues: {
+      ingredientList: [{ name: "", amount: "", hasThis: false }],
+      url: "",
+      title: "",
+    },
+  });
 
-  const { handleSubmit, register, getValues, setValue, unregister } = useForm();
+  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
+    {
+      control,
+      name: "ingredientList",
+    }
+  );
 
   const { isLoading, error, data, refetch } = useQuery(
     `ingredients`,
@@ -17,22 +38,24 @@ export const EventRegister = () => {
       enabled: false,
       onSuccess: (data) => {
         if (data) {
-          setIngredients((state) =>
-            [...state, ...data.ingredientList].filter((i) => i.name || i.amount)
-          );
-          setValue("title", data.title);
+          append(data.ingredientList);
         }
       },
     }
   );
 
   const onClickImport = useCallback(() => {
+    // const willRemove = fields
+    //   .map((f, i) => (!(f.name || f.amount) ? i : null))
+    //   .filter((f) => typeof f === "number") as number[];
+    // console.log(willRemove);
+    // remove(willRemove);
     refetch();
   }, [refetch]);
 
   const onClickAddRow = useCallback(() => {
-    setIngredients((state) => [...state, { name: "", amount: "" }]);
-  }, [setIngredients]);
+    append({ name: "", amount: "", hasThis: false });
+  }, []);
 
   return (
     <div className="flex flex-col h-full w-full gap-3">
@@ -62,31 +85,31 @@ export const EventRegister = () => {
       </div>
       <div className="h-full w-full text-xs">
         <ol className="flex flex-col p-0 gap-1">
-          {ingredients.map((ingredient, i) => (
-            <li className="flex items-center gap-2">
+          {fields.map((field, i) => (
+            <li key={field.id} className="flex items-center gap-2">
               <input
                 type="checkbox"
-                {...register(`ingredientList.${i}.shouldBuy`)}
+                defaultChecked={field.hasThis}
+                {...register(`ingredientList.${i}.hasThis` as const)}
               />
               <input
                 className="py-1 px-2 w-full border rounded"
                 type="text"
                 placeholder="材料"
-                defaultValue={ingredient.name}
-                {...register(`ingredientList.${i}.name`)}
+                defaultValue={field.name}
+                {...register(`ingredientList.${i}.name` as const)}
               />
               <input
                 className="py-1 px-2 w-16 border rounded"
                 type="text"
                 placeholder="数量"
-                defaultValue={ingredient.amount}
-                {...register(`ingredientList.${i}.amount`)}
+                defaultValue={field.amount}
+                {...register(`ingredientList.${i}.amount` as const)}
               />
               <button
                 className="py-1 px-2 border rounded whitespace-nowrap"
                 onClick={() => {
-                  setIngredients((state) => state.filter((_, j) => i !== j));
-                  unregister(`ingredientList.${i}`);
+                  remove(i);
                 }}
               >
                 削除

@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 export const EventRegister = () => {
   const [ingredients, setIngredients] = useState([{ name: "", amount: "" }]);
 
-  const { handleSubmit, register, getValues, setValue } = useForm();
+  const { handleSubmit, register, getValues, setValue, unregister } = useForm();
 
   const { isLoading, error, data, refetch } = useQuery(
     `ingredients`,
@@ -63,22 +63,34 @@ export const EventRegister = () => {
       <div className="h-full w-full text-xs">
         <ol className="flex flex-col p-0 gap-1">
           {ingredients.map((ingredient, i) => (
-            <li key={i} className="flex items-center gap-2">
-              <input type="checkbox" {...register(`shouldBuy.${i}`)} />
+            <li className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                {...register(`ingredientList.${i}.shouldBuy`)}
+              />
               <input
                 className="py-1 px-2 w-full border rounded"
                 type="text"
                 placeholder="材料"
-                value={ingredient.name}
-                {...register(`name.${i}`)}
+                defaultValue={ingredient.name}
+                {...register(`ingredientList.${i}.name`)}
               />
               <input
                 className="py-1 px-2 w-16 border rounded"
                 type="text"
                 placeholder="数量"
-                value={ingredient.amount}
-                {...register(`amount.${i}`)}
+                defaultValue={ingredient.amount}
+                {...register(`ingredientList.${i}.amount`)}
               />
+              <button
+                className="py-1 px-2 border rounded whitespace-nowrap"
+                onClick={() => {
+                  setIngredients((state) => state.filter((_, j) => i !== j));
+                  unregister(`ingredientList.${i}`);
+                }}
+              >
+                削除
+              </button>
             </li>
           ))}
         </ol>

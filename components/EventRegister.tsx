@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 
@@ -13,6 +13,8 @@ type MenuFormValue = {
 };
 
 export const EventRegister = () => {
+  const isFetched = useRef(false);
+
   const { register, control, getValues } = useForm<MenuFormValue>({
     defaultValues: {
       ingredientList: [{ name: "", amount: "", hasThis: false }],
@@ -38,18 +40,24 @@ export const EventRegister = () => {
       enabled: false,
       onSuccess: (data) => {
         if (data) {
+          isFetched.current = true;
           append(data.ingredientList);
         }
       },
     }
   );
 
+  useEffect(() => {
+    if (isFetched.current) {
+      isFetched.current = false;
+      const willRemove = fields
+        .map((f, i) => (!(f.name || f.amount) ? i : null))
+        .filter((f) => typeof f === "number") as number[];
+      remove(willRemove);
+    }
+  }, [fields]);
+
   const onClickImport = useCallback(() => {
-    // const willRemove = fields
-    //   .map((f, i) => (!(f.name || f.amount) ? i : null))
-    //   .filter((f) => typeof f === "number") as number[];
-    // console.log(willRemove);
-    // remove(willRemove);
     refetch();
   }, [refetch]);
 

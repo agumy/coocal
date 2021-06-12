@@ -1,57 +1,81 @@
+import { useEffect, useMemo } from "react";
 import { NextPage } from "next";
+import { useForm } from "react-hook-form";
+import { auth } from "../../firebase";
 
 const Register: NextPage = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<{ email: string; password: string }>({
+    reValidateMode: "onBlur",
+  });
+
+  const signUp = handleSubmit(async (data) => {
+    if (data.email && data.password) {
+      try {
+        const result = await auth.createUserWithEmailAndPassword(
+          data.email,
+          data.password
+        );
+        if (result.user) {
+          const ACTION_CODE_SETTINGS = {
+            url: "http://localhost:3000/register/verified",
+            // This must be true.
+            handleCodeInApp: true,
+          };
+
+          await result.user.sendEmailVerification(ACTION_CODE_SETTINGS);
+          ("email を送信しました.");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  });
+
+  useEffect(() => {
+    auth.onAuthStateChanged((state) => {
+      console.log(state);
+    });
+  }, []);
+
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
+        onSubmit={signUp}
         className="w-1/3 h-auto border rounded-lg shadow bg-gray-100 flex flex-col justify-center p-4 gap-3 my-3"
       >
         <label className="flex flex-col gap-1">
-          <span className="text-lg">名前</span>
-          <input type="text" className="py-1 px-2 rounded" />
-        </label>
-        <div className="flex flex-col gap-1">
-          <span className="text-lg">性別</span>
-          <div className="flex gap-2">
-            <label className="flex gap-1 items-center">
-              <input
-                name="gender"
-                type="radio"
-                className="py-1 px-2 rounded"
-                defaultChecked
-              />
-              <span>男性</span>
-            </label>
-            <label className="flex gap-1 items-center">
-              <input name="gender" type="radio" className="py-1 px-2 rounded" />
-              <span>女性</span>
-            </label>
-            <label className="flex gap-1 items-center">
-              <input name="gender" type="radio" className="py-1 px-2 rounded" />
-              <span>その他</span>
-            </label>
-          </div>
-        </div>
-        <label className="flex flex-col gap-1">
-          <span className="text-lg">生年月日</span>
-          <input
-            type="date"
-            className="py-1 px-2 rounded"
-            min="1900-01-01"
-            max="2009-12-31"
-          />
-        </label>
-
-        <label className="flex flex-col gap-1">
           <span className="text-lg">メールアドレス</span>
-          <input type="text" className="py-1 px-2 rounded" />
+          <input
+            type="text"
+            className="py-1 px-2 rounded"
+            {...register("email", {
+              required: "メールアドレスを入力してください。",
+            })}
+          />
+          <div className="text-red-600 text-sm h-3">
+            {errors.email && errors.email.message}
+          </div>
         </label>
         <label className="flex flex-col gap-1">
           <span className="text-lg">パスワード</span>
-          <input type="password" className="py-1 px-2 rounded" />
+          <input
+            type="password"
+            className="py-1 px-2 rounded"
+            {...register("password", {
+              required: "パスワードを入力してください。",
+              minLength: {
+                value: 8,
+                message: "パスワードは８文字以上で入力してください。",
+              },
+            })}
+          />
+          <div className="text-red-600 text-sm h-3">
+            {errors.password && errors.password.message}
+          </div>
         </label>
 
         <div className="mt-2 flex justify-end">

@@ -21,7 +21,7 @@ const Register: NextPage = () => {
         );
         if (result.user) {
           const ACTION_CODE_SETTINGS = {
-            url: "http://localhost:3000/register/verified",
+            url: "http://localhost:3000/sign-up/verified",
             // This must be true.
             handleCodeInApp: true,
           };
@@ -47,6 +47,7 @@ const Register: NextPage = () => {
         onSubmit={signUp}
         className="w-1/3 h-auto border rounded-lg shadow bg-gray-100 flex flex-col justify-center p-4 gap-3 my-3"
       >
+        <h1 className="text-2xl">新規登録</h1>
         <label className="flex flex-col gap-1">
           <span className="text-lg">メールアドレス</span>
           <input

@@ -20,7 +20,7 @@ const Login: NextPage = () => {
         );
         if (result.user && !result.user.emailVerified) {
           const ACTION_CODE_SETTINGS = {
-            url: "http://localhost:3000/register/verified",
+            url: "http://localhost:3000/sign-up/verified",
             // This must be true.
             handleCodeInApp: true,
           };
@@ -40,6 +40,7 @@ const Login: NextPage = () => {
         onSubmit={signIn}
         className="w-1/3 h-auto border rounded-lg shadow bg-gray-100 flex flex-col justify-center p-4 gap-3 my-3"
       >
+        <h1 className="text-2xl">ログイン</h1>
         <label className="flex flex-col gap-1">
           <span className="text-lg">メールアドレス</span>
           <input

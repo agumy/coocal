@@ -27,7 +27,7 @@ export const Header = () => {
       </div>
       <div className="flex items-center justify-end gap-2">
         {!user && (
-          <Link href="/register">
+          <Link href="/sign-up">
             <span
               tabIndex={0}
               role="link"
@@ -45,7 +45,7 @@ export const Header = () => {
             ログアウト
           </button>
         ) : (
-          <Link href="/login">
+          <Link href="/sign-in">
             <span
               tabIndex={0}
               role="link"

@@ -15,12 +15,18 @@ export const Header = () => {
     <header className="h-32 w-full bg-blue-200 flex items-center justify-between px-4">
       <div>
         <Link href="/">
-          <h1 className="text-gray-500 cursor-pointer">Coocal</h1>
+          <h1 tabIndex={0} role="link" className="text-gray-500 cursor-pointer">
+            Coocal
+          </h1>
         </Link>
       </div>
       <div className="flex items-center justify-end gap-2">
         <Link href="/register">
-          <span className="border border-gray-500 rounded py-1 px-2 text-gray-500 cursor-pointer">
+          <span
+            tabIndex={0}
+            role="link"
+            className="border border-gray-500 rounded py-1 px-2 text-gray-500 cursor-pointer"
+          >
             登録
           </span>
         </Link>

@@ -1,16 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import Link from "next/link";
-import firebase from "firebase";
 import { auth } from "../firebase";
+import { useUserContext } from "../context/UserContext";
 
 export const Header = () => {
-  const [user, setUser] = useState<firebase.User | null>(null);
-
-  useEffect(() => {
-    auth.onAuthStateChanged((state) => {
-      setUser(state);
-    });
-  }, [setUser]);
+  const user = useUserContext();
 
   const logout = useCallback(async () => {
     await auth.signOut();

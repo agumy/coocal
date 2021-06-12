@@ -1,4 +1,3 @@
-import { useEffect, useMemo } from "react";
 import { NextPage } from "next";
 import { useForm } from "react-hook-form";
 import { auth } from "../../firebase";
@@ -34,12 +33,6 @@ const Register: NextPage = () => {
       }
     }
   });
-
-  useEffect(() => {
-    auth.onAuthStateChanged((state) => {
-      console.log(state);
-    });
-  }, []);
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">

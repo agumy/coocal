@@ -1,11 +1,16 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { auth, googleAuthProvider } from "../firebase";
+import firebase from "firebase";
+import { auth } from "../firebase";
 
 export const Header = () => {
-  const login = useCallback(() => {
-    auth.signInWithRedirect(googleAuthProvider).then((res) => console.log(res));
-  }, []);
+  const [user, setUser] = useState<firebase.User | null>(null);
+
+  useEffect(() => {
+    auth.onAuthStateChanged((state) => {
+      setUser(state);
+    });
+  }, [setUser]);
 
   const logout = useCallback(async () => {
     await auth.signOut();
@@ -21,21 +26,35 @@ export const Header = () => {
         </Link>
       </div>
       <div className="flex items-center justify-end gap-2">
-        <Link href="/register">
-          <span
-            tabIndex={0}
-            role="link"
-            className="border border-gray-500 rounded py-1 px-2 text-gray-500 cursor-pointer"
+        {!user && (
+          <Link href="/register">
+            <span
+              tabIndex={0}
+              role="link"
+              className="border border-gray-500 rounded py-1 px-2 text-gray-500 cursor-pointer"
+            >
+              登録
+            </span>
+          </Link>
+        )}
+        {user ? (
+          <button
+            onClick={logout}
+            className="border border-gray-500 rounded py-1 px-2 text-gray-500"
           >
-            登録
-          </span>
-        </Link>
-        <button
-          onClick={logout}
-          className="border border-gray-500 rounded py-1 px-2 text-gray-500"
-        >
-          ログアウト
-        </button>
+            ログアウト
+          </button>
+        ) : (
+          <Link href="/login">
+            <span
+              tabIndex={0}
+              role="link"
+              className="border border-gray-500 rounded py-1 px-2 text-gray-500 cursor-pointer"
+            >
+              ログイン
+            </span>
+          </Link>
+        )}
       </div>
     </header>
   );

@@ -1,6 +1,8 @@
 import { NextPage } from "next";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { auth, firestore } from "../../firebase";
+import Spinner from "react-bootstrap/Spinner";
 
 const Register: NextPage = () => {
   const {
@@ -11,8 +13,11 @@ const Register: NextPage = () => {
     reValidateMode: "onBlur",
   });
 
+  const [isLoading, setLoading] = useState(false);
+
   const signUp = handleSubmit(async (data) => {
     if (data.email && data.password) {
+      setLoading(true);
       try {
         const result = await auth.createUserWithEmailAndPassword(
           data.email,
@@ -33,6 +38,8 @@ const Register: NextPage = () => {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     }
   });
@@ -76,11 +83,21 @@ const Register: NextPage = () => {
         </label>
 
         <div className="mt-2 flex justify-end">
-          <input
-            className="py-1 px-3 border rounded bg-white"
-            type="submit"
-            value="登録"
-          />
+          <button type="submit" className="py-1 px-3 border rounded bg-white">
+            {isLoading ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              </>
+            ) : (
+              "新規登録"
+            )}
+          </button>
         </div>
       </form>
     </div>

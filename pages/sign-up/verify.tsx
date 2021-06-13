@@ -37,29 +37,33 @@ const Verify: NextPage = () => {
         <Toast.Body>確認用メールを再送しました。</Toast.Body>
       </Toast>
       <div className="flex flex-col items-center h-full w-full p-4">
-        <section className="flex flex-col gap-2">
-          <h1>確認用のメールを送信しました。</h1>
-          <span className="text flex flex-col ">
-            <span>
-              <span className="font-bold">{user?.email}</span>{" "}
-              へ確認用のメールを送信しました。
-            </span>
-            <span>
-              メールをご確認いただき、メールに記載された URL
-              をクリックして登録を完了してください。
-            </span>
-            <span className="mt-2">
-              メールが届いていない場合は
-              <span
-                role="button"
-                onClick={onClick}
-                className="text-blue-500 underline"
-              >
-                こちら
+        {user ? (
+          <section className="flex flex-col gap-2">
+            <h1>確認用のメールを送信しました。</h1>
+            <span className="text flex flex-col ">
+              <span>
+                <span className="font-bold">{user?.email}</span>{" "}
+                へ確認用のメールを送信しました。
+              </span>
+              <span>
+                メールをご確認いただき、メールに記載された URL
+                をクリックして登録を完了してください。
+              </span>
+              <span className="mt-2">
+                メールが届いていない場合は
+                <span
+                  role="button"
+                  onClick={onClick}
+                  className="text-blue-500 underline"
+                >
+                  こちら
+                </span>
               </span>
             </span>
-          </span>
-        </section>
+          </section>
+        ) : (
+          "無効なページです"
+        )}
       </div>
     </div>
   );

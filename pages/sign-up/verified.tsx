@@ -1,8 +1,14 @@
 import { NextPage } from "next";
 import { useForm } from "react-hook-form";
 import isValid from "date-fns/isValid";
+import { useMemo } from "react";
+import { firestore } from "../../firebase";
+import { useUserContext } from "../../context/UserContext";
+import { useRouter } from "next/dist/client/router";
 
 const Register: NextPage = () => {
+  const user = useUserContext();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -16,13 +22,24 @@ const Register: NextPage = () => {
     },
   });
 
+  const onSubmit = useMemo(
+    () =>
+      handleSubmit(async ({ name, birthday, gender }) => {
+        await firestore.collection("users").doc(user?.uid).set({
+          name,
+          birthday,
+          gender,
+        });
+        router.push("/");
+      }),
+    [handleSubmit]
+  );
+
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
       <form
-        onSubmit={handleSubmit((d) => {
-          console.log(d);
-        })}
-        className="w-1/3 h-auto border rounded-lg shadow bg-gray-100 flex flex-col justify-center p-4 gap-3 my-3"
+        onSubmit={onSubmit}
+        className="w-1/3 h-auto border rounded-lg shadow bg-gray-100 flex flex-col justify-center p-4 gap-1 my-3"
       >
         <label className="flex flex-col gap-1">
           <span className="text-lg">名前</span>

@@ -25,15 +25,30 @@ const Register: NextPage = () => {
   const onSubmit = useMemo(
     () =>
       handleSubmit(async ({ name, birthday, gender }) => {
-        await firestore.collection("users").doc(user?.uid).set({
-          name,
-          birthday,
-          gender,
-        });
-        router.push("/");
+        try {
+          if (!user) {
+            throw new Error("ユーザーはログインしていません。");
+          }
+          await firestore.collection("users").doc(user.uid).update({
+            name,
+            birthday,
+            gender,
+          });
+          router.push("/");
+        } catch (error) {
+          console.error(error);
+        }
       }),
-    [handleSubmit]
+    [handleSubmit, user]
   );
+
+  if (!user) {
+    return (
+      <div className="h-full w-full p-4 flex justify-center">
+        無効なページです
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">

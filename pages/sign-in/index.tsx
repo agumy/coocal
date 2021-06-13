@@ -14,20 +14,7 @@ const Login: NextPage = () => {
   const signIn = handleSubmit(async (data) => {
     if (data.email && data.password) {
       try {
-        const result = await auth.signInWithEmailAndPassword(
-          data.email,
-          data.password
-        );
-        if (result.user && !result.user.emailVerified) {
-          const ACTION_CODE_SETTINGS = {
-            url: "http://localhost:3000/sign-up/verified",
-            // This must be true.
-            handleCodeInApp: true,
-          };
-
-          await result.user.sendEmailVerification(ACTION_CODE_SETTINGS);
-          ("email を送信しました.");
-        }
+        await auth.signInWithEmailAndPassword(data.email, data.password);
       } catch (error) {
         console.log(error);
       }
@@ -76,7 +63,7 @@ const Login: NextPage = () => {
           <input
             className="py-1 px-3 border rounded bg-white"
             type="submit"
-            value="登録"
+            value="ログイン"
           />
         </div>
       </form>

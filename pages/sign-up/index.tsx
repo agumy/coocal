@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { useForm } from "react-hook-form";
-import { auth } from "../../firebase";
+import { auth, firestore } from "../../firebase";
 
 const Register: NextPage = () => {
   const {
@@ -24,9 +24,12 @@ const Register: NextPage = () => {
             // This must be true.
             handleCodeInApp: true,
           };
-
-          await result.user.sendEmailVerification(ACTION_CODE_SETTINGS);
-          ("email を送信しました.");
+          await Promise.all([
+            firestore.collection("users").doc(result.user.uid).set({
+              email: result.user.email,
+            }),
+            result.user.sendEmailVerification(ACTION_CODE_SETTINGS),
+          ]);
         }
       } catch (error) {
         console.log(error);

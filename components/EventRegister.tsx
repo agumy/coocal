@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useQuery } from "react-query";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useMutation, useQuery } from "react-query";
 import { useFieldArray, useForm } from "react-hook-form";
+import { useUserContext } from "../context/UserContext";
+import { firestore } from "../firebase";
 
 type MenuFormValue = {
   ingredientList: {
@@ -12,16 +14,21 @@ type MenuFormValue = {
   url: string;
 };
 
-export const EventRegister = () => {
-  const isFetched = useRef(false);
+interface Props {
+  date: Date;
+}
 
-  const { register, control, getValues } = useForm<MenuFormValue>({
-    defaultValues: {
-      ingredientList: [{ name: "", amount: "", hasThis: false }],
-      url: "",
-      title: "",
-    },
-  });
+export const EventRegister = ({ date }: Props) => {
+  const user = useUserContext();
+
+  const { register, control, getValues, setValue, handleSubmit } =
+    useForm<MenuFormValue>({
+      defaultValues: {
+        ingredientList: [{ name: "", amount: "", hasThis: false }],
+        url: "",
+        title: "",
+      },
+    });
 
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
     {
@@ -29,6 +36,17 @@ export const EventRegister = () => {
       name: "ingredientList",
     }
   );
+
+  const isFetched = useRef(false);
+  useEffect(() => {
+    if (isFetched.current) {
+      isFetched.current = false;
+      const willRemove = fields
+        .map((f, i) => (!(f.name || f.amount) ? i : null))
+        .filter((f) => typeof f === "number") as number[];
+      remove(willRemove);
+    }
+  }, [fields]);
 
   const { isLoading, error, data, refetch } = useQuery(
     `ingredients`,
@@ -42,20 +60,20 @@ export const EventRegister = () => {
         if (data) {
           isFetched.current = true;
           append(data.ingredientList);
+          setValue("title", data.title);
         }
       },
     }
   );
 
-  useEffect(() => {
-    if (isFetched.current) {
-      isFetched.current = false;
-      const willRemove = fields
-        .map((f, i) => (!(f.name || f.amount) ? i : null))
-        .filter((f) => typeof f === "number") as number[];
-      remove(willRemove);
-    }
-  }, [fields]);
+  const mutation = useMutation(
+    (newMenu: {
+      author: string;
+      date: Date;
+      name: string;
+      ingredientList: { name: string; amount: string; hasThis: boolean }[];
+    }) => firestore.collection("menus").add(newMenu)
+  );
 
   const onClickImport = useCallback(() => {
     refetch();
@@ -65,8 +83,27 @@ export const EventRegister = () => {
     append({ name: "", amount: "", hasThis: false });
   }, []);
 
+  const onSubmit = useMemo(
+    () =>
+      handleSubmit(async (data) => {
+        if (user) {
+          const ingredientList = data.ingredientList.filter(
+            (i) => i.name && i.amount
+          );
+
+          mutation.mutate({
+            author: user.uid,
+            date: date,
+            name: data.title,
+            ingredientList,
+          });
+        }
+      }),
+    [user, handleSubmit]
+  );
+
   return (
-    <div className="flex flex-col h-full w-full gap-3">
+    <form className="flex flex-col h-full w-full gap-3" onSubmit={onSubmit}>
       <div className="flex w-full h-11">
         <input
           type="text"
@@ -133,10 +170,13 @@ export const EventRegister = () => {
         >
           材料を追加
         </button>
-        <button className="rounded px-3 py-1 bg-blue-500 text-gray-100">
+        <button
+          className="rounded px-3 py-1 bg-blue-500 text-gray-100"
+          type="submit"
+        >
           登録
         </button>
       </div>
-    </div>
+    </form>
   );
 };

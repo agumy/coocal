@@ -1,6 +1,8 @@
-import { setDay } from "date-fns";
-import React, { useEffect } from "react";
+import React from "react";
+import setDay from "date-fns/setDay";
+import groupBy from "lodash/groupBy";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import { BsFillPlusCircleFill } from "react-icons/bs";
 import Popover from "react-bootstrap/Popover";
 import { useQuery } from "react-query";
 import { useUserContext } from "../context/UserContext";
@@ -28,8 +30,8 @@ export const Calendar = () => {
   const [monthCalendar, days] = useMonthlyCalendar();
   const user = useUserContext();
 
-  const { data } = useQuery(
-    ["menus", days[0]],
+  const { data: menus } = useQuery(
+    ["menus", days[0], user?.uid],
     () =>
       firestore
         .collection("menus")
@@ -38,14 +40,18 @@ export const Calendar = () => {
         .startAt(days[0])
         .endAt(days[days.length - 1])
         .get()
-        .then((res) => res.docs.map((d) => d.data())),
+        .then((res) =>
+          groupBy(
+            res.docs.map((d) => d.data()),
+            (doc) => doc.date.toDate().toISOString()
+          )
+        ),
     {
       refetchOnMount: false,
       refetchOnWindowFocus: false,
+      retryOnMount: true,
     }
   );
-
-  console.log(data);
 
   return (
     <div className="flex flex-col h-full w-full p-4">
@@ -65,24 +71,43 @@ export const Calendar = () => {
       <div className="flex flex-col h-full w-full">
         {monthCalendar.map((weekCalendar, i) => (
           <div key={i} className="flex h-full w-full">
-            {weekCalendar.map((date, j) => (
-              <OverlayTrigger
-                rootClose
-                trigger="click"
-                placement="auto-start"
-                overlay={<PopoverComponent date={date} />}
+            {weekCalendar.map((date) => (
+              <div
                 key={date.toISOString()}
+                tabIndex={0}
+                className="flex flex-col w-1/7 p-1 h-full text-gray-500 border-gray-300 border-l border-b last:border-r"
               >
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="flex items-start justify-center w-1/7 p-1 h-full text-gray-500 border-gray-300 border-l border-b last:border-r"
-                >
+                <span className="flex items-center justify-center relative min-w-full">
                   {date.toLocaleDateString("en-US", {
                     day: "numeric",
                   })}
-                </div>
-              </OverlayTrigger>
+                  <OverlayTrigger
+                    rootClose
+                    trigger="click"
+                    placement="auto-start"
+                    overlay={<PopoverComponent date={date} />}
+                  >
+                    <BsFillPlusCircleFill className="absolute right-0 cursor-pointer" />
+                  </OverlayTrigger>
+                </span>
+                {menus && (
+                  <ul className="p-0 m-0 flex flex-col">
+                    {menus[date.toISOString()]?.map((menu) => (
+                      <OverlayTrigger
+                        key={menu.name}
+                        rootClose
+                        trigger="click"
+                        placement="auto-start"
+                        overlay={<PopoverComponent date={date} menu={menu} />}
+                      >
+                        <li className="whitespace-nowrap overflow-ellipsis overflow-hidden text-bold text-black p-1 cursor-pointer">
+                          {menu.name}
+                        </li>
+                      </OverlayTrigger>
+                    ))}
+                  </ul>
+                )}
+              </div>
             ))}
           </div>
         ))}

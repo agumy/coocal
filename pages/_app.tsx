@@ -1,5 +1,6 @@
 import { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { UserContextProvider } from "../context/UserContext";
 import "tailwindcss/tailwind.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -15,6 +16,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Header />
           <Component {...pageProps} />
         </div>
+        <ReactQueryDevtools initialIsOpen={false} />
       </UserContextProvider>
     </QueryClientProvider>
   );

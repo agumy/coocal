@@ -1,26 +1,45 @@
 import { setDay } from "date-fns";
+import React, { useEffect } from "react";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
+import { useQuery } from "react-query";
+import { useUserContext } from "../context/UserContext";
+import { firestore } from "../firebase";
 import { useMonthlyCalendar } from "../hooks/useMonthlyCalendar";
 import { EventRegister } from "./EventRegister";
 
-const PopoverComponent = (props: any) => {
+const PopoverComponent = React.forwardRef((props: any, ref) => {
   return (
     <Popover
+      ref={ref}
       id="popover-basic"
       {...props}
       style={{ ...props.style, maxWidth: "400px" }}
       className="shadow-md bg-blue-100 w-full"
     >
       <Popover.Content className="h-full w-full">
-        <EventRegister />
+        <EventRegister date={props.date} />
       </Popover.Content>
     </Popover>
   );
-};
+});
 
 export const Calendar = () => {
-  const monthCalendar = useMonthlyCalendar();
+  const [monthCalendar, days] = useMonthlyCalendar();
+  const user = useUserContext();
+
+  const { data } = useQuery(`menus`, () =>
+    firestore
+      .collection("menus")
+      .where("author", "==", user?.uid)
+      .orderBy("date", "asc")
+      .startAt(days[0])
+      .endAt(days[days.length - 1])
+      .get()
+      .then((res) => res.docs.map((d) => d.data()))
+  );
+
+  console.log(data);
 
   return (
     <div className="flex flex-col h-full w-full p-4">
@@ -45,7 +64,7 @@ export const Calendar = () => {
                 rootClose
                 trigger="click"
                 placement="auto-start"
-                overlay={PopoverComponent}
+                overlay={<PopoverComponent date={date} />}
                 key={date.toISOString()}
               >
                 <div

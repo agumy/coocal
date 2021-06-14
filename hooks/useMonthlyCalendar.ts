@@ -26,5 +26,5 @@ export const useMonthlyCalendar = (date: Date = new Date()) => {
     addDays(startDateOfWeek, n)
   );
 
-  return arrayChunk(calendar, 7);
+  return [arrayChunk(calendar, 7), calendar] as const;
 };

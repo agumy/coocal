@@ -15,7 +15,8 @@ const arrayChunk = <T extends any[]>([...array]: T, size = 1): T[] => {
   );
 };
 
-export const useMonthlyCalendar = (date: Date = new Date()) => {
+export const useMonthlyCalendar = (year: number, month: number) => {
+  const date = new Date(year, month - 1);
   const first = startOfMonth(date);
   const last = lastDayOfMonth(date);
   const startDateOfWeek = startOfWeek(first);

@@ -9,6 +9,8 @@ import { useUserContext } from "../context/UserContext";
 import { firestore } from "../firebase";
 import { useMonthlyCalendar } from "../hooks/useMonthlyCalendar";
 import { EventRegister } from "./EventRegister";
+import { getMonth, getYear } from "date-fns";
+import { useMenus } from "../hooks/useMenus";
 
 const PopoverComponent = React.forwardRef((props: any, ref) => {
   return (
@@ -27,31 +29,12 @@ const PopoverComponent = React.forwardRef((props: any, ref) => {
 });
 
 export const Calendar = () => {
-  const [monthCalendar, days] = useMonthlyCalendar();
-  const user = useUserContext();
-
-  const { data: menus } = useQuery(
-    ["menus", days[0], user?.uid],
-    () =>
-      firestore
-        .collection("menus")
-        .where("author", "==", user?.uid)
-        .orderBy("date", "asc")
-        .startAt(days[0])
-        .endAt(days[days.length - 1])
-        .get()
-        .then((res) =>
-          groupBy(
-            res.docs.map((d) => d.data()),
-            (doc) => doc.date.toDate().toISOString()
-          )
-        ),
-    {
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-      retryOnMount: true,
-    }
+  const [monthCalendar] = useMonthlyCalendar(
+    getYear(new Date()),
+    getMonth(new Date())
   );
+
+  const { data: menus } = useMenus(getYear(new Date()), getMonth(new Date()));
 
   return (
     <div className="flex flex-col h-full w-full p-4">

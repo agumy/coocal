@@ -28,15 +28,21 @@ export const Calendar = () => {
   const [monthCalendar, days] = useMonthlyCalendar();
   const user = useUserContext();
 
-  const { data } = useQuery(`menus`, () =>
-    firestore
-      .collection("menus")
-      .where("author", "==", user?.uid)
-      .orderBy("date", "asc")
-      .startAt(days[0])
-      .endAt(days[days.length - 1])
-      .get()
-      .then((res) => res.docs.map((d) => d.data()))
+  const { data } = useQuery(
+    ["menus", days[0]],
+    () =>
+      firestore
+        .collection("menus")
+        .where("author", "==", user?.uid)
+        .orderBy("date", "asc")
+        .startAt(days[0])
+        .endAt(days[days.length - 1])
+        .get()
+        .then((res) => res.docs.map((d) => d.data())),
+    {
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    }
   );
 
   console.log(data);

@@ -46,7 +46,7 @@ export function useMenus(year: number, month: number) {
     {
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-      retryOnMount: false,
+      retryOnMount: true,
     }
   );
 

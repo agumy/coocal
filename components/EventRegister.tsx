@@ -3,6 +3,9 @@ import { useMutation, useQuery } from "react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useUserContext } from "../context/UserContext";
 import { firestore } from "../firebase";
+import { useMenus } from "../hooks/useMenus";
+import getMonth from "date-fns/getMonth";
+import getYear from "date-fns/getYear";
 
 type MenuFormValue = {
   ingredientList: {
@@ -30,12 +33,10 @@ export const EventRegister = ({ date }: Props) => {
       },
     });
 
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    {
-      control,
-      name: "ingredientList",
-    }
-  );
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "ingredientList",
+  });
 
   const isFetched = useRef(false);
   useEffect(() => {
@@ -48,7 +49,7 @@ export const EventRegister = ({ date }: Props) => {
     }
   }, [fields]);
 
-  const { isLoading, error, data, refetch } = useQuery(
+  const { refetch } = useQuery(
     `ingredients`,
     () =>
       fetch(
@@ -66,13 +67,22 @@ export const EventRegister = ({ date }: Props) => {
     }
   );
 
+  const { refetch: refetchMenus } = useMenus(getYear(date), getMonth(date));
+
   const mutation = useMutation(
     (newMenu: {
       author: string;
       date: Date;
       name: string;
       ingredientList: { name: string; amount: string; hasThis: boolean }[];
-    }) => firestore.collection("menus").add(newMenu)
+    }) => firestore.collection("menus").add(newMenu),
+    {
+      onSuccess: (data, variables, context) => {
+        console.log(data, variables, context);
+        refetchMenus();
+        document.body.click();
+      },
+    }
   );
 
   const onClickImport = useCallback(() => {
@@ -85,7 +95,7 @@ export const EventRegister = ({ date }: Props) => {
 
   const onSubmit = useMemo(
     () =>
-      handleSubmit(async (data) => {
+      handleSubmit((data) => {
         if (user) {
           const ingredientList = data.ingredientList.filter(
             (i) => i.name && i.amount
@@ -99,7 +109,7 @@ export const EventRegister = ({ date }: Props) => {
           });
         }
       }),
-    [user, handleSubmit]
+    [user, handleSubmit, mutation]
   );
 
   return (
@@ -121,6 +131,7 @@ export const EventRegister = ({ date }: Props) => {
             {...register("url")}
           />
           <button
+            type="button"
             className="border px-2 h-full rounded text-gray-500 whitespace-nowrap"
             onClick={onClickImport}
           >

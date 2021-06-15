@@ -1,16 +1,13 @@
 import React from "react";
 import setDay from "date-fns/setDay";
-import groupBy from "lodash/groupBy";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import Popover from "react-bootstrap/Popover";
-import { useQuery } from "react-query";
-import { useUserContext } from "../context/UserContext";
-import { firestore } from "../firebase";
-import { useMonthlyCalendar } from "../hooks/useMonthlyCalendar";
-import { EventRegister } from "./EventRegister";
-import { getMonth, getYear } from "date-fns";
+import getYear from "date-fns/getYear";
+import getMonth from "date-fns/getMonth";
 import { useMenus } from "../hooks/useMenus";
+import { EventRegister } from "./EventRegister";
+import { useMonthlyCalendar } from "../hooks/useMonthlyCalendar";
 
 const PopoverComponent = React.forwardRef((props: any, ref) => {
   return (
@@ -75,9 +72,9 @@ export const Calendar = () => {
                 </span>
                 {menus && (
                   <ul className="p-0 m-0 flex flex-col">
-                    {menus[date.toISOString()]?.map((menu) => (
+                    {menus[date.toISOString()]?.map((menu, i) => (
                       <OverlayTrigger
-                        key={menu.name}
+                        key={i}
                         rootClose
                         trigger="click"
                         placement="auto-start"

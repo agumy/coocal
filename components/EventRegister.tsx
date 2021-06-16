@@ -53,7 +53,7 @@ export const EventRegister = ({ date }: Props) => {
     `ingredients`,
     () =>
       fetch(
-        `http://localhost:3000/api/ingredient?url=${getValues("url")}`
+        `http://localhost:3000/api/ingredients?url=${getValues("url")}`
       ).then((res) => res.json()),
     {
       enabled: false,

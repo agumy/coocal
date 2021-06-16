@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useUserContext } from "../context/UserContext";
 import { firestore } from "../firebase";
-import { useMenus } from "../hooks/useMenus";
+import { useMenus, Menu } from "../hooks/useMenus";
 import getMonth from "date-fns/getMonth";
 import getYear from "date-fns/getYear";
 
@@ -19,9 +19,10 @@ type MenuFormValue = {
 
 interface Props {
   date: Date;
+  menu: Menu;
 }
 
-export const EventRegister = ({ date }: Props) => {
+export const EventRegister = ({ date, menu }: Props) => {
   const user = useUserContext();
 
   const { register, control, getValues, setValue, handleSubmit } =
@@ -33,10 +34,17 @@ export const EventRegister = ({ date }: Props) => {
       },
     });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, insert } = useFieldArray({
     control,
     name: "ingredientList",
   });
+
+  useEffect(() => {
+    if (menu) {
+      setValue("title", menu.name);
+      insert(0, menu.ingredientList);
+    }
+  }, [menu]);
 
   const isFetched = useRef(false);
   useEffect(() => {

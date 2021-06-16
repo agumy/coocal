@@ -10,7 +10,7 @@ interface Ingredient {
   hasThis: boolean;
 }
 
-interface Menu {
+export interface Menu {
   name: string;
   author: string;
   ingredientList: Ingredient[];

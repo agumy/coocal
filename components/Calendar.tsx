@@ -19,7 +19,7 @@ const PopoverComponent = React.forwardRef((props: any, ref) => {
       className="shadow-md bg-blue-100 w-full"
     >
       <Popover.Content className="h-full w-full">
-        <EventRegister date={props.date} />
+        <EventRegister date={props.date} menu={props.menu} />
       </Popover.Content>
     </Popover>
   );

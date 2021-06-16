@@ -1,6 +1,6 @@
-import { useCallback, useReducer } from "react";
+import { useCallback, useReducer, useState } from "react";
 import Link from "next/link";
-import { auth } from "../firebase";
+import { auth, firestore } from "../firebase";
 import { useUserContext } from "../context/UserContext";
 import Modal from "react-bootstrap/Modal";
 import { Button, Form } from "react-bootstrap";
@@ -13,6 +13,30 @@ export const Header = () => {
   }, [auth]);
 
   const [show, toggle] = useReducer((prev) => !prev, false);
+
+  const [token, setToken] = useState("");
+
+  const generateToken = async () => {
+    if (user) {
+      const doc = await firestore
+        .collection("scope")
+        .where("users", "array-contains", user.uid)
+        .get();
+
+      if (!doc.size) {
+        const doc = await firestore
+          .collection("scope")
+          .add({ users: [user.uid] });
+
+        setToken(doc.id);
+        toggle();
+        return;
+      }
+
+      setToken(doc.docs[0].id);
+      toggle();
+    }
+  };
 
   return (
     <>
@@ -34,7 +58,7 @@ export const Header = () => {
               <span>{user.email} でログイン中</span>
               {user.emailVerified && (
                 <button
-                  onClick={toggle}
+                  onClick={generateToken}
                   className="border border-gray-500 rounded py-1 px-2 text-gray-500"
                 >
                   パートナーを招待
@@ -78,20 +102,21 @@ export const Header = () => {
           </Modal.Header>
           <Modal.Body>
             <Form.Group>
-              <Form.Label>メールアドレス</Form.Label>
+              <Form.Label>招待URL</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="メールアドレスを入力してください"
+                value={`http://localhost:3000/sign-up?code=${token}`}
+                readOnly
               />
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button type="button" variant="secondary">
+            <Button type="button" variant="secondary" onClick={toggle}>
               閉じる
             </Button>
-            <Button type="submit" variant="primary">
+            {/* <Button type="submit" variant="primary">
               招待
-            </Button>
+            </Button> */}
           </Modal.Footer>
         </Form>
       </Modal>

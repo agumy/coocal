@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { useForm } from "react-hook-form";
 import isValid from "date-fns/isValid";
 import { useMemo } from "react";
-import { auth, firestore } from "../../firebase";
+import firebase, { auth, firestore } from "../../firebase";
 import { useUserContext } from "../../context/UserContext";
 import { useRouter } from "next/dist/client/router";
 
@@ -29,12 +29,24 @@ const Register: NextPage = () => {
           if (!user) {
             throw new Error("ユーザーはログインしていません。");
           }
+          const code = router.query.code;
+
           await auth.currentUser?.getIdToken(true);
-          await firestore.collection("users").doc(user.uid).update({
-            name,
-            birthday,
-            gender,
-          });
+          await Promise.all([
+            firestore.collection("users").doc(user.uid).update({
+              name,
+              birthday,
+              gender,
+            }),
+            typeof code === "string"
+              ? firestore
+                  .collection("scope")
+                  .doc(code)
+                  .update({
+                    users: firebase.firestore.FieldValue.arrayUnion(user.uid),
+                  })
+              : Promise.resolve(),
+          ]);
           router.push("/");
         } catch (error) {
           console.error(error);

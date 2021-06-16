@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { auth, firestore } from "../../firebase";
 import Spinner from "react-bootstrap/Spinner";
+import { useRouter } from "next/dist/client/router";
 
 const Register: NextPage = () => {
   const {
@@ -12,6 +13,8 @@ const Register: NextPage = () => {
   } = useForm<{ email: string; password: string }>({
     reValidateMode: "onBlur",
   });
+
+  const router = useRouter();
 
   const [isLoading, setLoading] = useState(false);
 
@@ -24,8 +27,10 @@ const Register: NextPage = () => {
           data.password
         );
         if (result.user) {
+          const code = router.query?.code;
+          const query = code ? `?code=${code}` : "";
           const ACTION_CODE_SETTINGS = {
-            url: "http://localhost:3000/sign-up/verified",
+            url: `http://localhost:3000/sign-up/verified${query}`,
             // This must be true.
             handleCodeInApp: true,
           };

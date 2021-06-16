@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=development node ./server.js",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
@@ -12,8 +12,10 @@
     "date-fns": "^2.22.1",
     "firebase": "^8.6.5",
     "http-proxy-middleware": "^2.0.0",
+    "jsdom": "^16.6.0",
     "lodash": "^4.17.21",
     "next": "10.2.3",
+    "node-fetch": "^2.6.1",
     "react": "17.0.2",
     "react-bootstrap": "^1.6.0",
     "react-dom": "17.0.2",
@@ -23,8 +25,10 @@
     "tailwindcss": "^2.1.2"
   },
   "devDependencies": {
+    "@types/jsdom": "^16.2.11",
     "@types/lodash": "^4.14.170",
     "@types/next": "^9.0.0",
+    "@types/node-fetch": "^2.5.10",
     "@types/react": "^17.0.8",
     "autoprefixer": "^10.2.6",
     "express": "^4.17.1",

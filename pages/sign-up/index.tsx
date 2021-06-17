@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { auth, firestore } from "../../firebase";
+import firebase, { auth, firestore } from "../../firebase";
 import Spinner from "react-bootstrap/Spinner";
 import { useRouter } from "next/dist/client/router";
 
@@ -28,9 +28,8 @@ const Register: NextPage = () => {
         );
         if (result.user) {
           const code = router.query?.code;
-          const query = code ? `?code=${code}` : "";
           const ACTION_CODE_SETTINGS = {
-            url: `http://localhost:3000/sign-up/verified${query}`,
+            url: `http://localhost:3000/sign-up/verified`,
             // This must be true.
             handleCodeInApp: true,
           };
@@ -38,6 +37,16 @@ const Register: NextPage = () => {
             firestore.collection("users").doc(result.user.uid).set({
               email: result.user.email,
             }),
+            typeof code === "string"
+              ? firestore
+                  .collection("scope")
+                  .doc(code)
+                  .update({
+                    users: firebase.firestore.FieldValue.arrayUnion(
+                      result.user.uid
+                    ),
+                  })
+              : Promise.resolve(),
             result.user.sendEmailVerification(ACTION_CODE_SETTINGS),
           ]);
         }

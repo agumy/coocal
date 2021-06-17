@@ -5,7 +5,7 @@ import { useUserContext } from "../../context/UserContext";
 import Toast from "react-bootstrap/Toast";
 
 const Verify: NextPage = () => {
-  const user = useUserContext();
+  const { user } = useUserContext();
 
   const [isShow, toggle] = useReducer((prev) => !prev, false);
 

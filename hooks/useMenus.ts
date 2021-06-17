@@ -20,7 +20,7 @@ export interface Menu {
 type MenuDic = Record<string, Menu[]>;
 
 export function useMenus(year: number, month: number) {
-  const user = useUserContext();
+  const { user } = useUserContext();
   const [, days] = useMonthlyCalendar(year, month);
 
   const start = days[0];

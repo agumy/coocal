@@ -23,7 +23,7 @@ interface Props {
 }
 
 export const EventRegister = ({ date, menu }: Props) => {
-  const user = useUserContext();
+  const { user, scope } = useUserContext();
 
   const { register, control, getValues, setValue, handleSubmit } =
     useForm<MenuFormValue>({
@@ -82,6 +82,7 @@ export const EventRegister = ({ date, menu }: Props) => {
       author: string;
       date: Date;
       name: string;
+      scope?: string;
       ingredientList: { name: string; amount: string; hasThis: boolean }[];
     }) => firestore.collection("menus").add(newMenu),
     {
@@ -114,10 +115,11 @@ export const EventRegister = ({ date, menu }: Props) => {
             date: date,
             name: data.title,
             ingredientList,
+            scope: scope ?? undefined,
           });
         }
       }),
-    [user, handleSubmit, mutation]
+    [user, handleSubmit, mutation, scope]
   );
 
   return (

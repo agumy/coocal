@@ -6,7 +6,7 @@ import Modal from "react-bootstrap/Modal";
 import { Button, Form } from "react-bootstrap";
 
 export const Header = () => {
-  const user = useUserContext();
+  const { user, scope } = useUserContext();
 
   const logout = useCallback(async () => {
     await auth.signOut();
@@ -18,12 +18,7 @@ export const Header = () => {
 
   const generateToken = async () => {
     if (user) {
-      const doc = await firestore
-        .collection("scope")
-        .where("users", "array-contains", user.uid)
-        .get();
-
-      if (!doc.size) {
+      if (!scope) {
         const doc = await firestore
           .collection("scope")
           .add({ users: [user.uid] });
@@ -33,7 +28,7 @@ export const Header = () => {
         return;
       }
 
-      setToken(doc.docs[0].id);
+      setToken(scope);
       toggle();
     }
   };

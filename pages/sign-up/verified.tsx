@@ -7,7 +7,7 @@ import { useUserContext } from "../../context/UserContext";
 import { useRouter } from "next/dist/client/router";
 
 const Register: NextPage = () => {
-  const user = useUserContext();
+  const { user } = useUserContext();
   const router = useRouter();
   const {
     register,
@@ -38,14 +38,6 @@ const Register: NextPage = () => {
               birthday,
               gender,
             }),
-            typeof code === "string"
-              ? firestore
-                  .collection("scope")
-                  .doc(code)
-                  .update({
-                    users: firebase.firestore.FieldValue.arrayUnion(user.uid),
-                  })
-              : Promise.resolve(),
           ]);
           router.push("/");
         } catch (error) {

@@ -1,9 +1,8 @@
 import { NextPage } from "next";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import firebase, { auth, firestore } from "../../firebase";
+import { auth } from "../../firebase";
 import Spinner from "react-bootstrap/Spinner";
-import { useRouter } from "next/dist/client/router";
 
 const Register: NextPage = () => {
   const {
@@ -13,8 +12,6 @@ const Register: NextPage = () => {
   } = useForm<{ email: string; password: string }>({
     reValidateMode: "onBlur",
   });
-
-  const router = useRouter();
 
   const [isLoading, setLoading] = useState(false);
 
@@ -27,28 +24,11 @@ const Register: NextPage = () => {
           data.password
         );
         if (result.user) {
-          const code = router.query?.code;
           const ACTION_CODE_SETTINGS = {
             url: `http://localhost:3000/sign-up/verified`,
-            // This must be true.
             handleCodeInApp: true,
           };
-          await Promise.all([
-            firestore.collection("users").doc(result.user.uid).set({
-              email: result.user.email,
-            }),
-            typeof code === "string"
-              ? firestore
-                  .collection("scope")
-                  .doc(code)
-                  .update({
-                    users: firebase.firestore.FieldValue.arrayUnion(
-                      result.user.uid
-                    ),
-                  })
-              : Promise.resolve(),
-            result.user.sendEmailVerification(ACTION_CODE_SETTINGS),
-          ]);
+          await result.user.sendEmailVerification(ACTION_CODE_SETTINGS);
         }
       } catch (error) {
         console.log(error);

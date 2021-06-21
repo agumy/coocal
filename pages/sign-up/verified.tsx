@@ -1,10 +1,11 @@
 import { NextPage } from "next";
 import { useForm } from "react-hook-form";
 import isValid from "date-fns/isValid";
+import format from "date-fns/format";
 import { useMemo } from "react";
-import firebase, { auth, firestore } from "../../firebase";
 import { useUserContext } from "../../context/UserContext";
 import { useRouter } from "next/dist/client/router";
+import UserRepository from "../../repository/UserRepository";
 
 const Register: NextPage = () => {
   const { user } = useUserContext();
@@ -13,7 +14,11 @@ const Register: NextPage = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<{ name: string; gender: string; birthday: Date }>({
+  } = useForm<{
+    name: string;
+    gender: "male" | "female" | "other";
+    birthday: Date;
+  }>({
     reValidateMode: "onBlur",
     defaultValues: {
       name: "",
@@ -29,16 +34,12 @@ const Register: NextPage = () => {
           if (!user) {
             throw new Error("ユーザーはログインしていません。");
           }
-          const code = router.query.code;
-
-          await auth.currentUser?.getIdToken(true);
-          await Promise.all([
-            firestore.collection("users").doc(user.uid).update({
-              name,
-              birthday,
-              gender,
-            }),
-          ]);
+          const formarttedBirthday = format(birthday, "yyyy-MM-dd");
+          await UserRepository.create({
+            name,
+            birthday: formarttedBirthday,
+            gender,
+          });
           router.push("/");
         } catch (error) {
           console.error(error);

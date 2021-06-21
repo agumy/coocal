@@ -17,17 +17,6 @@ export const useUserContext = () => {
 
   return context;
 };
-
-const sendEmail = async (user: firebase.User) => {
-  const ACTION_CODE_SETTINGS = {
-    url: "http://localhost:3000/sign-up/verified",
-    // This must be true.
-    handleCodeInApp: true,
-  };
-
-  await user.sendEmailVerification(ACTION_CODE_SETTINGS);
-};
-
 export const UserContextProvider: React.VFC<Props> = ({ children }) => {
   const [user, setUser] = useState<firebase.User | null>(null);
   const [scope, setScope] = useState<string | null>(null);
@@ -40,16 +29,6 @@ export const UserContextProvider: React.VFC<Props> = ({ children }) => {
 
       if (user && !user.emailVerified) {
         router.push("/sign-up/verify");
-      }
-
-      if (user && user.emailVerified) {
-        const scope = await firestore
-          .collection("scope")
-          .where("users", "array-contains", user.uid)
-          .get();
-        if (scope.size) {
-          setScope(scope.docs[0].id);
-        }
       }
     });
   }, []);

@@ -1,37 +1,18 @@
-import { useCallback, useReducer, useState } from "react";
+import { useCallback, useReducer } from "react";
 import Link from "next/link";
-import { auth, firestore } from "../firebase";
+import { auth } from "../firebase";
 import { useUserContext } from "../context/UserContext";
 import Modal from "react-bootstrap/Modal";
 import { Button, Form } from "react-bootstrap";
 
 export const Header = () => {
-  const { user, scope } = useUserContext();
+  const { user } = useUserContext();
 
   const logout = useCallback(async () => {
     await auth.signOut();
   }, [auth]);
 
   const [show, toggle] = useReducer((prev) => !prev, false);
-
-  const [token, setToken] = useState("");
-
-  const generateToken = async () => {
-    if (user) {
-      if (!scope) {
-        const doc = await firestore
-          .collection("scope")
-          .add({ users: [user.uid] });
-
-        setToken(doc.id);
-        toggle();
-        return;
-      }
-
-      setToken(scope);
-      toggle();
-    }
-  };
 
   return (
     <>
@@ -53,10 +34,10 @@ export const Header = () => {
               <span>{user.email} でログイン中</span>
               {user.emailVerified && (
                 <button
-                  onClick={generateToken}
+                  onClick={toggle}
                   className="border border-gray-500 rounded py-1 px-2 text-gray-500"
                 >
-                  パートナーを招待
+                  共有設定
                 </button>
               )}
               <button
@@ -93,14 +74,14 @@ export const Header = () => {
       <Modal show={show} onHide={toggle} backdrop="static" centered>
         <Form>
           <Modal.Header closeButton>
-            <Modal.Title>パートナーを招待する</Modal.Title>
+            <Modal.Title>共有設定</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form.Group>
               <Form.Label>招待URL</Form.Label>
               <Form.Control
                 type="text"
-                value={`http://localhost:3000/sign-up?code=${token}`}
+                // value={`http://localhost:3000/sign-up?code=${token}`}
                 readOnly
               />
             </Form.Group>

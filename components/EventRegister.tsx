@@ -23,7 +23,7 @@ interface Props {
 }
 
 export const EventRegister = ({ date, menu }: Props) => {
-  const { user, scope } = useUserContext();
+  const { user } = useUserContext();
 
   const { register, control, getValues, setValue, handleSubmit } =
     useForm<MenuFormValue>({

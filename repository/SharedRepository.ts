@@ -7,7 +7,17 @@ const URL =
     : "http://localhost:5001/coocal/us-central1/api";
 
 export default {
-  getCode: async () => {},
+  getCode: async (): Promise<{ code: string }> => {
+    const token = await AuthRepository.getToken();
+    const response = await axios({
+      method: "GET",
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+      url: `${URL}/shared/code`,
+    });
+    return response.data;
+  },
   generateCode: async (): Promise<{ code: string }> => {
     const token = await AuthRepository.getToken();
     const response = await axios({

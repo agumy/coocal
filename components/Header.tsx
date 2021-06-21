@@ -1,4 +1,10 @@
-import { SyntheticEvent, useCallback, useReducer, useState } from "react";
+import {
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import Link from "next/link";
 import { auth } from "../firebase";
 import { useUserContext } from "../context/UserContext";
@@ -20,6 +26,14 @@ export const Header = () => {
     const { code } = await SharedRepository.generateCode();
     setCode(code);
   }, []);
+  useEffect(() => {
+    if (user) {
+      (async () => {
+        const { code } = await SharedRepository.getCode();
+        setCode(code);
+      })();
+    }
+  }, [user]);
 
   return (
     <>

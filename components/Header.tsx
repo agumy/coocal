@@ -21,6 +21,7 @@ export const Header = () => {
 
   const [show, toggle] = useReducer((prev) => !prev, false);
 
+  const [mode, setMode] = useState<"NONE" | "REGISTER" | "GENERATE">("NONE");
   const [code, setCode] = useState("");
   const generateCode = useCallback(async () => {
     const { code } = await SharedRepository.generateCode();
@@ -34,6 +35,10 @@ export const Header = () => {
       })();
     }
   }, [user]);
+
+  const registerCode = useCallback(async () => {
+    await SharedRepository.register(code);
+  }, [code]);
 
   return (
     <>
@@ -98,8 +103,31 @@ export const Header = () => {
             <Modal.Title>共有設定</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form.Group className="">
-              {code ? (
+            <Form.Group className="flex flex-col gap-2">
+              {mode === "REGISTER" && (
+                <>
+                  <Form.Label>招待コード</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={code}
+                    onChange={(e) => {
+                      setCode(e.currentTarget.value);
+                    }}
+                  />
+                </>
+              )}
+              {mode === "NONE" && (
+                <div className="w-full flex justify-center">
+                  <Button
+                    type="button"
+                    variant="primary"
+                    onClick={() => setMode("REGISTER")}
+                  >
+                    共有コードを使用する
+                  </Button>
+                </div>
+              )}
+              {mode === "GENERATE" && code && (
                 <>
                   <Form.Label>招待コード</Form.Label>
                   <Form.Control
@@ -111,13 +139,10 @@ export const Header = () => {
                     }}
                   />
                 </>
-              ) : (
+              )}
+              {mode === "NONE" && (
                 <div className="w-full flex justify-center">
-                  <Button
-                    type="button"
-                    variant="primary"
-                    onClick={generateCode}
-                  >
+                  <Button type="button" variant="dark" onClick={generateCode}>
                     共有コードを生成する
                   </Button>
                 </div>
@@ -128,9 +153,11 @@ export const Header = () => {
             <Button type="button" variant="secondary" onClick={toggle}>
               閉じる
             </Button>
-            {/* <Button type="submit" variant="primary">
-              招待
-            </Button> */}
+            {mode === "REGISTER" && (
+              <Button type="button" variant="primary" onClick={registerCode}>
+                登録
+              </Button>
+            )}
           </Modal.Footer>
         </Form>
       </Modal>

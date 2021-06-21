@@ -1,5 +1,4 @@
 import { NextPage } from "next";
-import Link from "next/link";
 import { useCallback, useReducer } from "react";
 import { useUserContext } from "../../context/UserContext";
 import Toast from "react-bootstrap/Toast";
@@ -16,7 +15,7 @@ const Verify: NextPage = () => {
         // This must be true.
         handleCodeInApp: true,
       };
-      await user.sendEmailVerification();
+      await user.sendEmailVerification(ACTION_CODE_SETTINGS);
       toggle();
     }
   }, [user]);

@@ -29,4 +29,17 @@ export default {
     });
     return response.data;
   },
+  register: async (code: string): Promise<void> => {
+    const token = await AuthRepository.getToken();
+    await axios({
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+      url: `${URL}/shared`,
+      data: {
+        code,
+      },
+    });
+  },
 };

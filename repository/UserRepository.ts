@@ -8,9 +8,7 @@ const URL =
     : "http://localhost:5001/coocal/us-central1/api";
 
 export default {
-  get: async () => {
-    // auth repositoryからtokenを取得し、header
-  },
+  get: async () => {},
   create: async (param: {
     name: string;
     birthday: string;

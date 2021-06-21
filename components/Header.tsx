@@ -1,9 +1,10 @@
-import { useCallback, useReducer } from "react";
+import { SyntheticEvent, useCallback, useReducer, useState } from "react";
 import Link from "next/link";
 import { auth } from "../firebase";
 import { useUserContext } from "../context/UserContext";
 import Modal from "react-bootstrap/Modal";
 import { Button, Form } from "react-bootstrap";
+import SharedRepository from "../repository/SharedRepository";
 
 export const Header = () => {
   const { user } = useUserContext();
@@ -13,6 +14,12 @@ export const Header = () => {
   }, [auth]);
 
   const [show, toggle] = useReducer((prev) => !prev, false);
+
+  const [code, setCode] = useState("");
+  const generateCode = useCallback(async () => {
+    const { code } = await SharedRepository.generateCode();
+    setCode(code);
+  }, []);
 
   return (
     <>
@@ -77,13 +84,30 @@ export const Header = () => {
             <Modal.Title>共有設定</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form.Group>
-              <Form.Label>招待URL</Form.Label>
-              <Form.Control
-                type="text"
-                // value={`http://localhost:3000/sign-up?code=${token}`}
-                readOnly
-              />
+            <Form.Group className="">
+              {code ? (
+                <>
+                  <Form.Label>招待コード</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={code}
+                    readOnly
+                    onFocus={(e: SyntheticEvent<HTMLInputElement>) => {
+                      e.currentTarget.select();
+                    }}
+                  />
+                </>
+              ) : (
+                <div className="w-full flex justify-center">
+                  <Button
+                    type="button"
+                    variant="primary"
+                    onClick={generateCode}
+                  >
+                    共有コードを生成する
+                  </Button>
+                </div>
+              )}
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>

@@ -2,10 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useUserContext } from "../context/UserContext";
-import { firestore } from "../firebase";
-import { useMenus, Menu } from "../hooks/useMenus";
-import getMonth from "date-fns/getMonth";
-import getYear from "date-fns/getYear";
+import { Menu } from "../hooks/useMenus";
+import format from "date-fns/format";
+import MenuRepository from "../repository/MenuRepository";
 
 type MenuFormValue = {
   ingredientList: {
@@ -15,6 +14,7 @@ type MenuFormValue = {
   }[];
   title: string;
   url: string;
+  shared: boolean;
 };
 
 interface Props {
@@ -31,6 +31,7 @@ export const EventRegister = ({ date, menu }: Props) => {
         ingredientList: [{ name: "", amount: "", hasThis: false }],
         url: "",
         title: "",
+        shared: true,
       },
     });
 
@@ -57,7 +58,7 @@ export const EventRegister = ({ date, menu }: Props) => {
     }
   }, [fields]);
 
-  const { refetch } = useQuery(
+  const { refetch: importMenu } = useQuery(
     `ingredients`,
     () =>
       fetch(
@@ -75,28 +76,24 @@ export const EventRegister = ({ date, menu }: Props) => {
     }
   );
 
-  const { refetch: refetchMenus } = useMenus(getYear(date), getMonth(date));
-
   const mutation = useMutation(
     (newMenu: {
-      author: string;
-      date: Date;
+      date: string;
       name: string;
-      scope?: string;
+      url: string;
       ingredientList: { name: string; amount: string; hasThis: boolean }[];
-    }) => firestore.collection("menus").add(newMenu),
+      shared: boolean;
+    }) => MenuRepository.create(newMenu),
     {
       onSuccess: (data, variables, context) => {
-        console.log(data, variables, context);
-        refetchMenus();
         document.body.click();
       },
     }
   );
 
   const onClickImport = useCallback(() => {
-    refetch();
-  }, [refetch]);
+    importMenu();
+  }, [importMenu]);
 
   const onClickAddRow = useCallback(() => {
     append({ name: "", amount: "", hasThis: false });
@@ -111,15 +108,15 @@ export const EventRegister = ({ date, menu }: Props) => {
           );
 
           mutation.mutate({
-            author: user.uid,
-            date: date,
+            date: format(date, "yyyy-MM-dd"),
             name: data.title,
+            shared: data.shared,
             ingredientList,
-            scope: scope ?? undefined,
+            url: data.url,
           });
         }
       }),
-    [user, handleSubmit, mutation, scope]
+    [user, handleSubmit, mutation]
   );
 
   return (
@@ -185,18 +182,26 @@ export const EventRegister = ({ date, menu }: Props) => {
         </ol>
       </div>
       <div className="flex justify-between items-center h-full">
-        <button
-          className="rounded border px-3 py-1 text-gray-500"
-          onClick={onClickAddRow}
-        >
-          材料を追加
-        </button>
-        <button
-          className="rounded px-3 py-1 bg-blue-500 text-gray-100"
-          type="submit"
-        >
-          登録
-        </button>
+        <div>
+          <button
+            className="rounded border px-3 py-1 text-gray-500"
+            onClick={onClickAddRow}
+          >
+            材料を追加
+          </button>
+        </div>
+        <div className="flex gap-3 items-center">
+          <label className="flex items-center gap-1">
+            <input type="checkbox" {...register("shared")} />
+            <span>共有</span>
+          </label>
+          <button
+            className="rounded px-3 py-1 bg-blue-500 text-gray-100"
+            type="submit"
+          >
+            登録
+          </button>
+        </div>
       </div>
     </form>
   );

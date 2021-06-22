@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useUserContext } from "../context/UserContext";
-import { Menu } from "../hooks/useMenus";
 import format from "date-fns/format";
 import MenuRepository from "../repository/MenuRepository";
+import { Menu } from "../models/Menu";
 
 type MenuFormValue = {
   ingredientList: {
@@ -43,6 +43,7 @@ export const EventRegister = ({ date, menu }: Props) => {
   useEffect(() => {
     if (menu) {
       setValue("title", menu.name);
+      setValue("url", menu.url);
       insert(0, menu.ingredientList);
     }
   }, [menu]);

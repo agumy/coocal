@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react";
+import groupBy from "lodash/groupBy";
 import setDay from "date-fns/setDay";
+import format from "date-fns/format";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import Popover from "react-bootstrap/Popover";
@@ -8,6 +10,11 @@ import getMonth from "date-fns/getMonth";
 import { useMenus } from "../hooks/useMenus";
 import { EventRegister } from "./EventRegister";
 import { useMonthlyCalendar } from "../hooks/useMonthlyCalendar";
+import { useQuery } from "react-query";
+import MenuRepository from "../repository/MenuRepository";
+import { useUserContext } from "../context/UserContext";
+import { Dictionary } from "lodash";
+import { Menu } from "../models/Menu";
 
 const PopoverComponent = React.forwardRef((props: any, ref) => {
   return (
@@ -26,12 +33,33 @@ const PopoverComponent = React.forwardRef((props: any, ref) => {
 });
 
 export const Calendar = () => {
-  const [monthCalendar] = useMonthlyCalendar(
+  const [monthCalendar, dates] = useMonthlyCalendar(
     getYear(new Date()),
     getMonth(new Date())
   );
 
-  const { data: menus } = useMenus(getYear(new Date()), getMonth(new Date()));
+  const { user } = useUserContext();
+
+  const { startDate, endDate } = useMemo(
+    () => ({
+      startDate: format(dates[0], "yyyy-MM-dd"),
+      endDate: format(dates[dates.length - 1], "yyyy-MM-dd"),
+    }),
+    [dates]
+  );
+
+  const { data, isLoading } = useQuery(
+    [startDate, endDate, user?.uid ?? ""],
+    () => {
+      if (!user) {
+        return Promise.resolve({} as Dictionary<Menu[]>);
+      }
+      return MenuRepository.get({ startDate, endDate }).then((res) => {
+        const dic = groupBy(res.menus, (menu) => menu.date);
+        return dic;
+      });
+    }
+  );
 
   return (
     <div className="flex flex-col h-full w-full p-4">
@@ -70,9 +98,9 @@ export const Calendar = () => {
                     <BsFillPlusCircleFill className="absolute right-0 cursor-pointer" />
                   </OverlayTrigger>
                 </span>
-                {menus && (
+                {data && (
                   <ul className="p-0 m-0 flex flex-col">
-                    {menus[date.toISOString()]?.map((menu, i) => (
+                    {data[format(date, "yyyy-MM-dd")]?.map((menu, i) => (
                       <OverlayTrigger
                         key={i}
                         rootClose

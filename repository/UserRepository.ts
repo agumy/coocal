@@ -5,7 +5,7 @@ import AuthRepository from "./AuthRepository";
 const URL =
   process.env.NODE_ENV === "production"
     ? ""
-    : "http://localhost:5001/coocal/us-central1/api";
+    : "http://localhost:5001/coocal/asia-northeast1/api";
 
 export default {
   get: async () => {},

@@ -58,7 +58,8 @@ export const Calendar = () => {
         const dic = groupBy(res.menus, (menu) => menu.date);
         return dic;
       });
-    }
+    },
+    { refetchOnWindowFocus: false }
   );
 
   return (

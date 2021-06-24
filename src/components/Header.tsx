@@ -23,9 +23,13 @@ export const Header = () => {
 
   const [mode, setMode] = useState<"NONE" | "REGISTER" | "GENERATE">("NONE");
   const [code, setCode] = useState("");
+
   const generateCode = useCallback(async () => {
-    const { code } = await SharedRepository.generateCode();
-    setCode(code);
+    if (!code) {
+      const { code } = await SharedRepository.generateCode();
+      setCode(code);
+    }
+    setMode("GENERATE");
   }, []);
   useEffect(() => {
     if (user) {
@@ -121,13 +125,16 @@ export const Header = () => {
                   <Button
                     type="button"
                     variant="primary"
-                    onClick={() => setMode("REGISTER")}
+                    onClick={() => {
+                      setMode("REGISTER");
+                      setCode("");
+                    }}
                   >
                     共有コードを使用する
                   </Button>
                 </div>
               )}
-              {mode === "GENERATE" && code && (
+              {mode === "GENERATE" && (
                 <>
                   <Form.Label>招待コード</Form.Label>
                   <Form.Control
@@ -150,7 +157,14 @@ export const Header = () => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button type="button" variant="secondary" onClick={toggle}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                toggle();
+                setMode("NONE");
+              }}
+            >
               閉じる
             </Button>
             {mode === "REGISTER" && (

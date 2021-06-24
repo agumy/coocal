@@ -1,66 +1,36 @@
+import { useMemo } from "react";
 import groupBy from "lodash/groupBy";
+import { Dictionary } from "lodash";
 import { useQuery } from "react-query";
+import format from "date-fns/format";
 import { useUserContext } from "../context/UserContext";
-import { firestore } from "../firebase";
-import { useMonthlyCalendar } from "./useMonthlyCalendar";
+import MenuRepository from "../repository/MenuRepository";
+import { Menu } from "../models/Menu";
 
-interface Ingredient {
-  name: string;
-  amount: string;
-  hasThis: boolean;
-}
-
-export interface Menu {
-  name: string;
-  author: string;
-  ingredientList: Ingredient[];
-  date: Date;
-}
-
-type MenuDic = Record<string, Menu[]>;
-
-export function useMenus(year: number, month: number) {
+export const useMenus = (period: { start: Date; end: Date }) => {
   const { user } = useUserContext();
-  const [, days] = useMonthlyCalendar(year, month);
 
-  const start = days[0];
-  const end = days[days.length - 1];
+  const { startDate, endDate } = useMemo(
+    () => ({
+      startDate: format(period.start, "yyyy-MM-dd"),
+      endDate: format(period.end, "yyyy-MM-dd"),
+    }),
+    [period]
+  );
 
   const query = useQuery(
-    ["menus", start, user?.uid],
-    async () => {
+    [startDate, endDate, user?.uid ?? ""],
+    () => {
       if (!user) {
-        throw new Error("user must login");
+        return Promise.resolve({} as Dictionary<Menu[]>);
       }
-
-      const menusCollection = firestore.collection("menus");
-      const [byUser, byScope] = await Promise.all([
-        menusCollection
-          .where("author", "==", user.uid)
-          .orderBy("date", "asc")
-          .startAt(start)
-          .endAt(end)
-          .get(),
-      ]);
-      const ids = Array.from(
-        new Set([
-          ...byUser.docs.map((d) => d.id),
-          ...byScope.docs.map((d) => d.id),
-        ])
-      );
-      const docs = ids.map(
-        (id) => [...byUser.docs, ...byScope.docs].find((d) => d.id === id)!
-      );
-      return groupBy(docs, (doc) =>
-        doc.data().date.toDate().toISOString()
-      ) as unknown as MenuDic[];
+      return MenuRepository.get({ startDate, endDate }).then((res) => {
+        const dic = groupBy(res.menus, (menu) => menu.date);
+        return dic;
+      });
     },
-    {
-      refetchOnMount: true,
-      refetchOnWindowFocus: true,
-      retryOnMount: true,
-    }
+    { refetchOnWindowFocus: false, retry: false }
   );
 
   return query;
-}
+};

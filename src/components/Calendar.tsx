@@ -1,5 +1,4 @@
-import React, { useMemo } from "react";
-import groupBy from "lodash/groupBy";
+import React from "react";
 import setDay from "date-fns/setDay";
 import format from "date-fns/format";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -10,12 +9,6 @@ import getMonth from "date-fns/getMonth";
 import { useMenus } from "../hooks/useMenus";
 import { EventRegister } from "./EventRegister";
 import { useMonthlyCalendar } from "../hooks/useMonthlyCalendar";
-import { useQuery } from "react-query";
-import MenuRepository from "../repository/MenuRepository";
-import { useUserContext } from "../context/UserContext";
-import { Dictionary } from "lodash";
-import { Menu } from "../models/Menu";
-
 const PopoverComponent = React.forwardRef((props: any, ref) => {
   return (
     <Popover
@@ -38,29 +31,7 @@ export const Calendar = () => {
     getMonth(new Date())
   );
 
-  const { user } = useUserContext();
-
-  const { startDate, endDate } = useMemo(
-    () => ({
-      startDate: format(dates[0], "yyyy-MM-dd"),
-      endDate: format(dates[dates.length - 1], "yyyy-MM-dd"),
-    }),
-    [dates]
-  );
-
-  const { data, isLoading } = useQuery(
-    [startDate, endDate, user?.uid ?? ""],
-    () => {
-      if (!user) {
-        return Promise.resolve({} as Dictionary<Menu[]>);
-      }
-      return MenuRepository.get({ startDate, endDate }).then((res) => {
-        const dic = groupBy(res.menus, (menu) => menu.date);
-        return dic;
-      });
-    },
-    { refetchOnWindowFocus: false }
-  );
+  const { data } = useMenus({ start: dates[0], end: dates[dates.length - 1] });
 
   return (
     <div className="flex flex-col h-full w-full p-4">

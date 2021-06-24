@@ -25,7 +25,7 @@ const Register: NextPage = () => {
         );
         if (result.user) {
           const ACTION_CODE_SETTINGS = {
-            url: `http://localhost:3000/sign-up/verified`,
+            url: `${window.location.origin}/sign-up/verified`,
             handleCodeInApp: true,
           };
           await result.user.sendEmailVerification(ACTION_CODE_SETTINGS);

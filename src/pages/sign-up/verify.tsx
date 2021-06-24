@@ -11,8 +11,7 @@ const Verify: NextPage = () => {
   const onClick = useCallback(async () => {
     if (user) {
       const ACTION_CODE_SETTINGS = {
-        url: "http://localhost:3000/sign-up/verified",
-        // This must be true.
+        url: "${window.location.origin}/sign-up/verified",
         handleCodeInApp: true,
       };
       await user.sendEmailVerification(ACTION_CODE_SETTINGS);

@@ -1,11 +1,5 @@
-import axios from "axios";
 import { Menu } from "../models/Menu";
-import AuthRepository from "./AuthRepository";
-
-const URL =
-  process.env.NODE_ENV === "production"
-    ? ""
-    : "http://localhost:5001/coocal/asia-northeast1/api";
+import { fetch } from "./fetch";
 
 export default {
   get: async ({
@@ -15,26 +9,18 @@ export default {
     startDate: string;
     endDate: string;
   }): Promise<{ menus: Menu[] }> => {
-    const token = await AuthRepository.getToken();
-    const response = await axios({
+    const response = await fetch({
       method: "GET",
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-      url: `${URL}/menu?startDate=${startDate}&endDate=${endDate}`,
+      resource: `menu?startDate=${startDate}&endDate=${endDate}`,
     });
     return response.data;
   },
   create: async (
     param: Omit<Menu, "author" | "id">
   ): Promise<{ menu: Menu }> => {
-    const token = await AuthRepository.getToken();
-    const response = await axios({
+    const response = await fetch({
       method: "POST",
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-      url: `${URL}/menu`,
+      resource: `menu`,
       data: {
         ...param,
       },

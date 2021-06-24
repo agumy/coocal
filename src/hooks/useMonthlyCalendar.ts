@@ -1,31 +1,21 @@
+import { useCallback, useMemo, useState } from "react";
 import {
-  addDays,
-  differenceInDays,
-  lastDayOfMonth,
-  lastDayOfWeek,
-  startOfMonth,
-  startOfWeek,
-} from "date-fns";
+  createMonthlyCalendarDates,
+  generateMonthlyCalendar,
+} from "../helper/calendar";
 
-const arrayChunk = <T extends any[]>([...array]: T, size = 1): T[] => {
-  return array.reduce(
-    (acc, _value, index) =>
-      index % size ? acc : [...acc, array.slice(index, index + size)],
-    []
-  );
-};
+export const useMonthlyCalendar = (initialDate: Date) => {
+  const [date, _setDate] = useState(initialDate);
 
-export const useMonthlyCalendar = (year: number, month: number) => {
-  const date = new Date(year, month);
-  const first = startOfMonth(date);
-  const last = lastDayOfMonth(date);
-  const startDateOfWeek = startOfWeek(first);
-  const lastDateOfWeek = lastDayOfWeek(last);
-  const diff = differenceInDays(lastDateOfWeek, startDateOfWeek);
+  const setDate = useCallback((year: number, month: number) => {
+    _setDate(new Date(year, month - 1));
+  }, []);
 
-  const calendar = [...Array(diff + 1).keys()].map((n) =>
-    addDays(startDateOfWeek, n)
-  );
+  const calendar = useMemo(() => {
+    const calendarDates = createMonthlyCalendarDates(date);
+    const calendar = generateMonthlyCalendar(calendarDates);
+    return calendar;
+  }, [date]);
 
-  return [arrayChunk(calendar, 7), calendar] as const;
+  return [calendar, date, setDate] as const;
 };

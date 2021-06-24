@@ -1,14 +1,14 @@
 import React from "react";
-import setDay from "date-fns/setDay";
-import format from "date-fns/format";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import { BsFillPlusCircleFill } from "react-icons/bs";
 import Popover from "react-bootstrap/Popover";
-import getYear from "date-fns/getYear";
-import getMonth from "date-fns/getMonth";
-import { useMenus } from "../hooks/useMenus";
+import { BsFillPlusCircleFill } from "react-icons/bs";
+import format from "date-fns/format";
+import setDay from "date-fns/setDay";
+
 import { EventRegister } from "./EventRegister";
+import { useMonthlyMenus } from "../hooks/useMonthlyMenus";
 import { useMonthlyCalendar } from "../hooks/useMonthlyCalendar";
+
 const PopoverComponent = React.forwardRef((props: any, ref) => {
   return (
     <Popover
@@ -26,12 +26,9 @@ const PopoverComponent = React.forwardRef((props: any, ref) => {
 });
 
 export const Calendar = () => {
-  const [monthCalendar, dates] = useMonthlyCalendar(
-    getYear(new Date()),
-    getMonth(new Date())
-  );
+  const [monthCalendar, date, setDate] = useMonthlyCalendar(new Date());
 
-  const { data } = useMenus({ start: dates[0], end: dates[dates.length - 1] });
+  const { data } = useMonthlyMenus(date);
 
   return (
     <div className="flex flex-col h-full w-full p-4">

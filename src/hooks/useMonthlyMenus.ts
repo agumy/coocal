@@ -1,23 +1,29 @@
 import { useMemo } from "react";
 import groupBy from "lodash/groupBy";
 import { useQuery } from "react-query";
-import format from "date-fns/format";
 import { useUserContext } from "../context/UserContext";
 import MenuRepository from "../repository/MenuRepository";
+import { createMonthlyCalendarDates, format } from "../helper/calendar";
+import { Dictionary } from "lodash";
+import { Menu } from "../models/Menu";
 
-export const useMenus = (period: { start: Date; end: Date }) => {
+export type MonthlyMenus = Dictionary<Menu[]>;
+
+export const useMonthlyMenus = (date: Date) => {
   const { user } = useUserContext();
+
+  const calendarDates = createMonthlyCalendarDates(date);
 
   const { startDate, endDate } = useMemo(
     () => ({
-      startDate: format(period.start, "yyyy-MM-dd"),
-      endDate: format(period.end, "yyyy-MM-dd"),
+      startDate: format(calendarDates[0]),
+      endDate: format(calendarDates[calendarDates.length - 1]),
     }),
-    [period]
+    [calendarDates]
   );
 
-  const query = useQuery(
-    [startDate, endDate, user?.uid],
+  const query = useQuery<MonthlyMenus>(
+    [startDate, endDate],
     () => {
       return MenuRepository.get({ startDate, endDate }).then((res) => {
         const dic = groupBy(res.menus, (menu) => menu.date);

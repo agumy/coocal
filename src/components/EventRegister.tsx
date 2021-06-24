@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useUserContext } from "../context/UserContext";
-import format from "date-fns/format";
-import MenuRepository from "../repository/MenuRepository";
 import { Menu } from "../models/Menu";
+import { useCreateMenu } from "../hooks/useCreateMenu";
+import { format } from "../helper/calendar";
 
 type MenuFormValue = {
   ingredientList: {
@@ -59,6 +59,10 @@ export const EventRegister = ({ date, menu }: Props) => {
     }
   }, [fields]);
 
+  const onClickAddRow = useCallback(() => {
+    append({ name: "", amount: "", hasThis: false });
+  }, []);
+
   const { refetch: importMenu } = useQuery(
     `ingredients`,
     () =>
@@ -77,28 +81,11 @@ export const EventRegister = ({ date, menu }: Props) => {
     }
   );
 
-  const mutation = useMutation(
-    (newMenu: {
-      date: string;
-      name: string;
-      url: string;
-      ingredientList: { name: string; amount: string; hasThis: boolean }[];
-      shared: boolean;
-    }) => MenuRepository.create(newMenu),
-    {
-      onSuccess: (data, variables, context) => {
-        document.body.click();
-      },
-    }
-  );
-
   const onClickImport = useCallback(() => {
     importMenu();
   }, [importMenu]);
 
-  const onClickAddRow = useCallback(() => {
-    append({ name: "", amount: "", hasThis: false });
-  }, []);
+  const { mutate } = useCreateMenu(date);
 
   const onSubmit = useMemo(
     () =>
@@ -108,8 +95,8 @@ export const EventRegister = ({ date, menu }: Props) => {
             (i) => i.name && i.amount
           );
 
-          mutation.mutate({
-            date: format(date, "yyyy-MM-dd"),
+          mutate({
+            date: format(date),
             name: data.title,
             shared: data.shared,
             ingredientList,
@@ -117,7 +104,7 @@ export const EventRegister = ({ date, menu }: Props) => {
           });
         }
       }),
-    [user, handleSubmit, mutation]
+    [user, handleSubmit, mutate]
   );
 
   return (

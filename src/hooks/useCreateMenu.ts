@@ -18,7 +18,7 @@ export const useCreateMenu = (date: Date) => {
   );
 
   const mutation = useMutation(MenuRepository.create, {
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data) => {
       queryClient.setQueryData<MonthlyMenus | undefined>(
         [start, end],
         (oldData) => {
@@ -33,6 +33,7 @@ export const useCreateMenu = (date: Date) => {
         }
       );
 
+      // FIXME: UIの責務
       document.body.click();
     },
   });

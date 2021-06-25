@@ -1,110 +1,41 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useQuery } from "react-query";
-import { useFieldArray, useForm } from "react-hook-form";
-import { useUserContext } from "../context/UserContext";
-import { Menu } from "../models/Menu";
-import { useCreateMenu } from "../hooks/useCreateMenu";
-import { format } from "../helper/calendar";
+import { useMemo } from "react";
 
-type MenuFormValue = {
-  ingredientList: {
-    name: string;
-    amount: string;
-    hasThis: boolean;
-  }[];
-  title: string;
-  url: string;
-  shared: boolean;
-};
+import { Menu } from "../../models/Menu";
+import { useCreateMenu } from "../../hooks/useCreateMenu";
+import { format } from "../../helper/calendar";
+import { useMenuForm } from "./useMenuForm";
 
 interface Props {
   date: Date;
   menu: Menu;
 }
 
-export const EventRegister = ({ date, menu }: Props) => {
-  const { user } = useUserContext();
+export const MenuDetail = ({ date, menu }: Props) => {
+  const {
+    form: { register, handleSubmit },
+    fieldArray: { fields, remove },
+    importMenu,
+    appendRow,
+  } = useMenuForm(menu);
 
-  const { register, control, getValues, setValue, handleSubmit } =
-    useForm<MenuFormValue>({
-      defaultValues: {
-        ingredientList: [{ name: "", amount: "", hasThis: false }],
-        url: "",
-        title: "",
-        shared: true,
-      },
-    });
-
-  const { fields, append, remove, insert } = useFieldArray({
-    control,
-    name: "ingredientList",
-  });
-
-  useEffect(() => {
-    if (menu) {
-      setValue("title", menu.name);
-      setValue("url", menu.url);
-      insert(0, menu.ingredientList);
-    }
-  }, [menu]);
-
-  const isFetched = useRef(false);
-  useEffect(() => {
-    if (isFetched.current) {
-      isFetched.current = false;
-      const willRemove = fields
-        .map((f, i) => (!(f.name || f.amount) ? i : null))
-        .filter((f) => typeof f === "number") as number[];
-      remove(willRemove);
-    }
-  }, [fields]);
-
-  const onClickAddRow = useCallback(() => {
-    append({ name: "", amount: "", hasThis: false });
-  }, []);
-
-  const { refetch: importMenu } = useQuery(
-    `ingredients`,
-    () =>
-      fetch(
-        `${window.location.origin}/api/ingredients?url=${getValues("url")}`
-      ).then((res) => res.json()),
-    {
-      enabled: false,
-      onSuccess: (data) => {
-        if (data) {
-          isFetched.current = true;
-          append(data.ingredientList);
-          setValue("title", data.title);
-        }
-      },
-    }
-  );
-
-  const onClickImport = useCallback(() => {
-    importMenu();
-  }, [importMenu]);
-
-  const { mutate } = useCreateMenu(date);
+  const { mutate, isLoading } = useCreateMenu(date);
 
   const onSubmit = useMemo(
     () =>
       handleSubmit((data) => {
-        if (user) {
-          const ingredientList = data.ingredientList.filter(
-            (i) => i.name && i.amount
-          );
+        const ingredientList = data.ingredientList.filter(
+          (i) => i.name && i.amount
+        );
 
-          mutate({
-            date: format(date),
-            name: data.title,
-            shared: data.shared,
-            ingredientList,
-            url: data.url,
-          });
-        }
+        mutate({
+          date: format(date),
+          name: data.title,
+          shared: data.shared,
+          ingredientList,
+          url: data.url,
+        });
       }),
-    [user, handleSubmit, mutate]
+    [handleSubmit, mutate]
   );
 
   return (
@@ -128,7 +59,9 @@ export const EventRegister = ({ date, menu }: Props) => {
           <button
             type="button"
             className="border px-2 h-full rounded text-gray-500 whitespace-nowrap"
-            onClick={onClickImport}
+            onClick={() => {
+              importMenu();
+            }}
           >
             レシピからインポート
           </button>
@@ -173,7 +106,7 @@ export const EventRegister = ({ date, menu }: Props) => {
         <div>
           <button
             className="rounded border px-3 py-1 text-gray-500"
-            onClick={onClickAddRow}
+            onClick={appendRow}
           >
             材料を追加
           </button>

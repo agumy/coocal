@@ -18,17 +18,16 @@ export const useCreateMenu = (date: Date) => {
   );
 
   const mutation = useMutation(MenuRepository.create, {
-    onSuccess: (data) => {
+    onSuccess: (data, { date }) => {
       queryClient.setQueryData<MonthlyMenus | undefined>(
         [start, end],
         (oldData) => {
-          const key = format(date);
           if (!oldData) {
             return;
           }
           return {
             ...oldData,
-            [key]: [...(oldData[key] ?? []), data],
+            [date]: [...(oldData[date] ?? []), data],
           } as MonthlyMenus;
         }
       );

@@ -5,7 +5,7 @@ import { BsFillPlusCircleFill } from "react-icons/bs";
 import format from "date-fns/format";
 import setDay from "date-fns/setDay";
 
-import { EventRegister } from "./EventRegister";
+import { MenuDetail } from "./MenuDetail";
 import { useMonthlyMenus } from "../hooks/useMonthlyMenus";
 import { useMonthlyCalendar } from "../hooks/useMonthlyCalendar";
 
@@ -19,7 +19,7 @@ const PopoverComponent = React.forwardRef((props: any, ref) => {
       className="shadow-md bg-blue-100 w-full"
     >
       <Popover.Content className="h-full w-full">
-        <EventRegister date={props.date} menu={props.menu} />
+        <MenuDetail date={props.date} menu={props.menu} />
       </Popover.Content>
     </Popover>
   );

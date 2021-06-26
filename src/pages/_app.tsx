@@ -2,8 +2,11 @@ import { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { UserContextProvider } from "../context/UserContext";
+
 import "tailwindcss/tailwind.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "antd/dist/antd.css";
+
 import { Header } from "../components/Header";
 
 const queryClient = new QueryClient();

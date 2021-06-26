@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "antd": "^4.16.5",
     "axios": "^0.21.1",
     "bootstrap": "^5.0.1",
     "date-fns": "^2.22.1",

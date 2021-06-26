@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import Spinner from "react-bootstrap/Spinner";
 
 import { Menu } from "../../models/Menu";
 import { useCreateMenu } from "../../hooks/useCreateMenu";
@@ -120,7 +121,19 @@ export const MenuDetail = ({ date, menu }: Props) => {
             className="rounded px-3 py-1 bg-blue-500 text-gray-100"
             type="submit"
           >
-            登録
+            {isLoading ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              </>
+            ) : (
+              "登録"
+            )}
           </button>
         </div>
       </div>

@@ -24,4 +24,11 @@ export default {
       },
     });
   },
+  getUser: async (): Promise<{ user: any }> => {
+    const response = await fetch({
+      method: "GET",
+      resource: `shared/user`,
+    });
+    return response.data;
+  },
 };

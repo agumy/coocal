@@ -6,6 +6,7 @@ import { useMemo } from "react";
 import { useUserContext } from "../../context/UserContext";
 import { useRouter } from "next/dist/client/router";
 import UserRepository from "../../repository/UserRepository";
+import { Button } from "antd";
 
 const Register: NextPage = () => {
   const { user } = useUserContext();
@@ -128,11 +129,9 @@ const Register: NextPage = () => {
         </div>
 
         <div className="mt-2 flex justify-end">
-          <input
-            className="py-1 px-3 border rounded bg-white"
-            type="submit"
-            value="登録"
-          />
+          <Button type="primary" onClick={onSubmit}>
+            登録
+          </Button>
         </div>
       </form>
     </div>

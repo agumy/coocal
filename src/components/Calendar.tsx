@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useMemo } from "react";
+import groupBy from "lodash/groupBy";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import { BsFillPlusCircleFill } from "react-icons/bs";
@@ -9,26 +10,35 @@ import { MenuDetail } from "./MenuDetail";
 import { useMonthlyMenus } from "../hooks/useMonthlyMenus";
 import { useMonthlyCalendar } from "../hooks/useMonthlyCalendar";
 
-const PopoverComponent = React.forwardRef((props: any, ref) => {
-  return (
-    <Popover
-      ref={ref}
-      id="popover-basic"
-      {...props}
-      style={{ ...props.style, maxWidth: "400px" }}
-      className="shadow-md bg-blue-100 w-full"
-    >
-      <Popover.Content className="h-full w-full">
-        <MenuDetail date={props.date} menu={props.menu} />
-      </Popover.Content>
-    </Popover>
-  );
-});
+const PopoverComponent = React.forwardRef(
+  ({ date, menu, calendarDate, ...props }: any, ref) => {
+    return (
+      <Popover
+        ref={ref}
+        id="popover-basic"
+        {...props}
+        style={{ ...props.style, maxWidth: "400px" }}
+        className="shadow-md bg-blue-100 w-full"
+      >
+        <Popover.Content className="h-full w-full">
+          <MenuDetail date={date} menu={menu} calendarDate={calendarDate} />
+        </Popover.Content>
+      </Popover>
+    );
+  }
+);
 
 export const Calendar = () => {
-  const [monthCalendar, date, setDate] = useMonthlyCalendar(new Date());
+  const [monthCalendar, calendarDate, setDate] = useMonthlyCalendar(new Date());
 
-  const { data } = useMonthlyMenus(date);
+  const { data } = useMonthlyMenus(calendarDate);
+
+  const menus = useMemo(() => {
+    if (data) {
+      const dic = groupBy(data ?? [], (menu) => menu.date);
+      return dic;
+    }
+  }, [data]);
 
   return (
     <div className="flex flex-col h-full w-full p-4">
@@ -62,23 +72,34 @@ export const Calendar = () => {
                     rootClose
                     trigger="click"
                     placement="auto-start"
-                    overlay={<PopoverComponent date={date} />}
+                    overlay={
+                      <PopoverComponent
+                        date={date}
+                        calendarDate={calendarDate}
+                      />
+                    }
                   >
                     <BsFillPlusCircleFill className="absolute right-0 cursor-pointer" />
                   </OverlayTrigger>
                 </span>
-                {data && (
+                {menus && (
                   <ul className="p-0 m-0 flex flex-col">
-                    {data[format(date, "yyyy-MM-dd")]?.map((menu, i) => (
+                    {menus[format(date, "yyyy-MM-dd")]?.map((menu, i) => (
                       <OverlayTrigger
                         key={i}
                         rootClose
                         trigger="click"
                         placement="auto-start"
-                        overlay={<PopoverComponent date={date} menu={menu} />}
+                        overlay={
+                          <PopoverComponent
+                            date={date}
+                            menu={menu}
+                            calendarDate={calendarDate}
+                          />
+                        }
                       >
                         <li className="whitespace-nowrap overflow-ellipsis overflow-hidden text-bold text-black p-1 cursor-pointer">
-                          {menu.name}
+                          {menu.name || "(タイトルなし)"}
                         </li>
                       </OverlayTrigger>
                     ))}

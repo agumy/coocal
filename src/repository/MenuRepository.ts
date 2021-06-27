@@ -8,12 +8,12 @@ export default {
   }: {
     startDate: string;
     endDate: string;
-  }): Promise<{ menus: Menu[] }> => {
+  }): Promise<Menu[]> => {
     const response = await fetch({
       method: "GET",
       resource: `menu?startDate=${startDate}&endDate=${endDate}`,
     });
-    return response.data;
+    return response.data.menus;
   },
   create: async (
     param: Omit<Menu, "author" | "id">

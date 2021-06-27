@@ -1,13 +1,8 @@
 import { useMemo } from "react";
-import groupBy from "lodash/groupBy";
 import { useQuery } from "react-query";
 import { useUserContext } from "../context/UserContext";
 import MenuRepository from "../repository/MenuRepository";
 import { createMonthlyCalendarDates, format } from "../helper/calendar";
-import { Dictionary } from "lodash";
-import { Menu } from "../models/Menu";
-
-export type MonthlyMenus = Dictionary<Menu[]>;
 
 export const useMonthlyMenus = (date: Date) => {
   const { user } = useUserContext();
@@ -22,14 +17,9 @@ export const useMonthlyMenus = (date: Date) => {
     [calendarDates]
   );
 
-  const query = useQuery<MonthlyMenus>(
+  const query = useQuery(
     [startDate, endDate],
-    () => {
-      return MenuRepository.get({ startDate, endDate }).then((res) => {
-        const dic = groupBy(res.menus, (menu) => menu.date);
-        return dic;
-      });
-    },
+    () => MenuRepository.get({ startDate, endDate }),
     { refetchOnWindowFocus: false, retry: false, enabled: !!user?.uid }
   );
 

@@ -10,9 +10,10 @@ import { Button } from "antd";
 interface Props {
   date: Date;
   menu: Menu;
+  calendarDate: Date;
 }
 
-export const MenuDetail = ({ date, menu }: Props) => {
+export const MenuDetail = ({ date, menu, calendarDate }: Props) => {
   const {
     form: { register, handleSubmit },
     fieldArray: { fields, remove },
@@ -21,8 +22,8 @@ export const MenuDetail = ({ date, menu }: Props) => {
     isLoadingImport,
   } = useMenuForm(menu);
 
-  const { mutate, isLoading } = useCreateMenu(date);
-  const deleteMenu = useDeleteMenu(date);
+  const { mutate, isLoading } = useCreateMenu(calendarDate);
+  const deleteMenu = useDeleteMenu(calendarDate);
 
   const onSubmit = useMemo(
     () =>

@@ -8,9 +8,8 @@ import {
 import Link from "next/link";
 import { auth } from "../firebase";
 import { useUserContext } from "../context/UserContext";
-import Modal from "react-bootstrap/Modal";
-import { Button, Form } from "react-bootstrap";
 import SharedRepository from "../repository/SharedRepository";
+import { SharedConfigModal } from "./SharedConfigModal";
 
 export const Header = () => {
   const { user } = useUserContext();
@@ -20,29 +19,6 @@ export const Header = () => {
   }, [auth]);
 
   const [show, toggle] = useReducer((prev) => !prev, false);
-
-  const [mode, setMode] = useState<"NONE" | "REGISTER" | "GENERATE">("NONE");
-  const [code, setCode] = useState("");
-
-  const generateCode = useCallback(async () => {
-    if (!code) {
-      const { code } = await SharedRepository.generateCode();
-      setCode(code);
-    }
-    setMode("GENERATE");
-  }, []);
-  useEffect(() => {
-    if (user) {
-      (async () => {
-        const { code } = await SharedRepository.getCode();
-        setCode(code);
-      })();
-    }
-  }, [user]);
-
-  const registerCode = useCallback(async () => {
-    await SharedRepository.register(code);
-  }, [code]);
 
   return (
     <>
@@ -64,7 +40,9 @@ export const Header = () => {
               <span>{user.email} でログイン中</span>
               {user.emailVerified && (
                 <button
-                  onClick={toggle}
+                  onClick={() => {
+                    toggle();
+                  }}
                   className="border border-gray-500 rounded py-1 px-2 text-gray-500"
                 >
                   共有設定
@@ -101,80 +79,7 @@ export const Header = () => {
           )}
         </div>
       </header>
-      <Modal show={show} onHide={toggle} backdrop="static" centered>
-        <Form>
-          <Modal.Header closeButton>
-            <Modal.Title>共有設定</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form.Group className="flex flex-col gap-2">
-              {mode === "REGISTER" && (
-                <>
-                  <Form.Label>招待コード</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={code}
-                    onChange={(e) => {
-                      setCode(e.currentTarget.value);
-                    }}
-                  />
-                </>
-              )}
-              {mode === "NONE" && (
-                <div className="w-full flex justify-center">
-                  <Button
-                    type="button"
-                    variant="primary"
-                    onClick={() => {
-                      setMode("REGISTER");
-                      setCode("");
-                    }}
-                  >
-                    共有コードを使用する
-                  </Button>
-                </div>
-              )}
-              {mode === "GENERATE" && (
-                <>
-                  <Form.Label>招待コード</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={code}
-                    readOnly
-                    onFocus={(e: SyntheticEvent<HTMLInputElement>) => {
-                      e.currentTarget.select();
-                    }}
-                  />
-                </>
-              )}
-              {mode === "NONE" && (
-                <div className="w-full flex justify-center">
-                  <Button type="button" variant="dark" onClick={generateCode}>
-                    共有コードを生成する
-                  </Button>
-                </div>
-              )}
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => {
-                toggle();
-                setMode("NONE");
-              }}
-            >
-              閉じる
-            </Button>
-            {mode === "REGISTER" && (
-              <Button type="button" variant="primary" onClick={registerCode}>
-                登録
-              </Button>
-            )}
-          </Modal.Footer>
-        </Form>
-      </Modal>
+      <SharedConfigModal visible={show} onCancel={toggle} />
     </>
   );
 };

@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import Spinner from "react-bootstrap/Spinner";
 
 import { Menu } from "../../models/Menu";
 import { useCreateMenu } from "../../hooks/useCreateMenu";
+import { useDeleteMenu } from "../../hooks/useDeleteMenu";
 import { format } from "../../helper/calendar";
 import { useMenuForm } from "./useMenuForm";
 import { Button } from "antd";
@@ -22,6 +22,7 @@ export const MenuDetail = ({ date, menu }: Props) => {
   } = useMenuForm(menu);
 
   const { mutate, isLoading } = useCreateMenu(date);
+  const deleteMenu = useDeleteMenu(date);
 
   const onSubmit = useMemo(
     () =>
@@ -120,12 +121,19 @@ export const MenuDetail = ({ date, menu }: Props) => {
             <input type="checkbox" {...register("shared")} />
             <span>共有</span>
           </label>
-          <Button
-            className="rounded px-3 py-1 bg-blue-500 text-gray-100"
-            type="primary"
-            loading={isLoading}
-            onClick={onSubmit}
-          >
+          {menu?.id && (
+            <Button
+              type="primary"
+              danger
+              onClick={() => {
+                deleteMenu.mutate({ id: menu.id });
+              }}
+              loading={deleteMenu.isLoading}
+            >
+              削除
+            </Button>
+          )}
+          <Button type="primary" loading={isLoading} onClick={onSubmit}>
             登録
           </Button>
         </div>

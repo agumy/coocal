@@ -1,14 +1,7 @@
-import {
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useReducer,
-  useState,
-} from "react";
+import { useCallback, useReducer } from "react";
 import Link from "next/link";
 import { auth } from "../firebase";
 import { useUserContext } from "../context/UserContext";
-import SharedRepository from "../repository/SharedRepository";
 import { SharedConfigModal } from "./SharedConfigModal";
 
 export const Header = () => {

@@ -5,6 +5,7 @@ import { Menu } from "../../models/Menu";
 import { useCreateMenu } from "../../hooks/useCreateMenu";
 import { format } from "../../helper/calendar";
 import { useMenuForm } from "./useMenuForm";
+import { Button } from "antd";
 
 interface Props {
   date: Date;
@@ -17,6 +18,7 @@ export const MenuDetail = ({ date, menu }: Props) => {
     fieldArray: { fields, remove },
     importMenu,
     appendRow,
+    isLoadingImport,
   } = useMenuForm(menu);
 
   const { mutate, isLoading } = useCreateMenu(date);
@@ -57,15 +59,16 @@ export const MenuDetail = ({ date, menu }: Props) => {
             className="p-2 h-full w-full border rounded"
             {...register("url")}
           />
-          <button
-            type="button"
+          <Button
+            type="default"
             className="border px-2 h-full rounded text-gray-500 whitespace-nowrap"
             onClick={() => {
               importMenu();
             }}
+            loading={isLoadingImport}
           >
             レシピからインポート
-          </button>
+          </Button>
         </div>
       </div>
       <div className="h-full w-full text-xs">
@@ -117,24 +120,14 @@ export const MenuDetail = ({ date, menu }: Props) => {
             <input type="checkbox" {...register("shared")} />
             <span>共有</span>
           </label>
-          <button
+          <Button
             className="rounded px-3 py-1 bg-blue-500 text-gray-100"
-            type="submit"
+            type="primary"
+            loading={isLoading}
+            onClick={onSubmit}
           >
-            {isLoading ? (
-              <>
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-              </>
-            ) : (
-              "登録"
-            )}
-          </button>
+            登録
+          </Button>
         </div>
       </div>
     </form>

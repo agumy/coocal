@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { Menu } from "../../models/Menu";
 
 type MenuFormValue = {
@@ -51,14 +51,12 @@ export const useMenuForm = (menu: Menu) => {
     }
   }, [fieldArray]);
 
-  const { refetch: importMenu } = useQuery(
-    `ingredients`,
+  const { mutate: importMenu, isLoading: isLoadingImport } = useMutation(
     () =>
       fetch(
         `${window.location.origin}/api/ingredients?url=${form.getValues("url")}`
       ).then((res) => res.json()),
     {
-      enabled: false,
       onSuccess: (data) => {
         if (data) {
           isFetched.current = true;
@@ -69,5 +67,5 @@ export const useMenuForm = (menu: Menu) => {
     }
   );
 
-  return { form, fieldArray, appendRow, importMenu };
+  return { form, fieldArray, appendRow, importMenu, isLoadingImport };
 };

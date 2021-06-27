@@ -27,4 +27,14 @@ export default {
     });
     return response.data;
   },
+  delete: async (param: { id: string }): Promise<{ menu: { id: string } }> => {
+    const response = await fetch({
+      method: "DELETE",
+      resource: `menu`,
+      data: {
+        ...param,
+      },
+    });
+    return response.data;
+  },
 };

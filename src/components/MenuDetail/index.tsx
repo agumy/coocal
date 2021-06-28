@@ -2,6 +2,7 @@ import { useMemo } from "react";
 
 import { Menu } from "../../models/Menu";
 import { useCreateMenu } from "../../hooks/useCreateMenu";
+import { useUpdateMenu } from "../../hooks/useUpdateMenu";
 import { useDeleteMenu } from "../../hooks/useDeleteMenu";
 import { format } from "../../helper/calendar";
 import { useMenuForm } from "./useMenuForm";
@@ -24,6 +25,7 @@ export const MenuDetail = ({ date, menu, calendarDate }: Props) => {
 
   const { mutate, isLoading } = useCreateMenu(calendarDate);
   const deleteMenu = useDeleteMenu(calendarDate);
+  const updateMenu = useUpdateMenu(calendarDate);
 
   const onSubmit = useMemo(
     () =>
@@ -31,14 +33,24 @@ export const MenuDetail = ({ date, menu, calendarDate }: Props) => {
         const ingredientList = data.ingredientList.filter(
           (i) => i.name && i.amount
         );
-
-        mutate({
-          date: format(date),
-          name: data.title,
-          shared: data.shared,
-          ingredientList,
-          url: data.url,
-        });
+        if (menu) {
+          updateMenu.mutate({
+            ...menu,
+            date: format(date),
+            name: data.title,
+            shared: data.shared,
+            ingredientList,
+            url: data.url,
+          });
+        } else {
+          mutate({
+            date: format(date),
+            name: data.title,
+            shared: data.shared,
+            ingredientList,
+            url: data.url,
+          });
+        }
       }),
     [handleSubmit, mutate]
   );
@@ -134,7 +146,11 @@ export const MenuDetail = ({ date, menu, calendarDate }: Props) => {
               削除
             </Button>
           )}
-          <Button type="primary" loading={isLoading} onClick={onSubmit}>
+          <Button
+            type="primary"
+            loading={isLoading || updateMenu.isLoading}
+            onClick={onSubmit}
+          >
             登録
           </Button>
         </div>

@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { createMonthlyCalendarDates, format } from "../helper/calendar";
+import { Menu } from "../models/Menu";
 import MenuRepository from "../repository/MenuRepository";
-import { MonthlyMenus } from "./useMonthlyMenus";
 
 export const useCreateMenu = (date: Date) => {
   const queryClient = useQueryClient();
@@ -18,19 +18,13 @@ export const useCreateMenu = (date: Date) => {
   );
 
   const mutation = useMutation(MenuRepository.create, {
-    onSuccess: (data, { date }) => {
-      queryClient.setQueryData<MonthlyMenus | undefined>(
-        [start, end],
-        (oldData) => {
-          if (!oldData) {
-            return;
-          }
-          return {
-            ...oldData,
-            [date]: [...(oldData[date] ?? []), data],
-          } as MonthlyMenus;
+    onSuccess: (data) => {
+      queryClient.setQueryData<Menu[] | undefined>([start, end], (oldData) => {
+        if (!oldData) {
+          return;
         }
-      );
+        return [...oldData, data];
+      });
 
       // FIXME: UIの責務
       document.body.click();

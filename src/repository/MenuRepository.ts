@@ -15,9 +15,7 @@ export default {
     });
     return response.data.menus;
   },
-  create: async (
-    param: Omit<Menu, "author" | "id">
-  ): Promise<{ menu: Menu }> => {
+  create: async (param: Omit<Menu, "author" | "id">): Promise<Menu> => {
     const response = await fetch({
       method: "POST",
       resource: `menu`,
@@ -25,7 +23,17 @@ export default {
         ...param,
       },
     });
-    return response.data;
+    return response.data.menu;
+  },
+  update: async (param: Menu): Promise<Menu> => {
+    const response = await fetch({
+      method: "PUT",
+      resource: `menu`,
+      data: {
+        ...param,
+      },
+    });
+    return response.data.menu;
   },
   delete: async (param: { id: string }): Promise<{ menu: { id: string } }> => {
     const response = await fetch({

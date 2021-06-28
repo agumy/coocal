@@ -1,0 +1,5 @@
+.aspect-fix-60::before {
+  content: "";
+  display: block;
+  padding-top: 60%;
+}

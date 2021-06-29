@@ -1,3 +1,9 @@
+.aspect-fix-40::before {
+  content: "";
+  display: block;
+  padding-top: 40%;
+}
+
 .aspect-fix-60::before {
   content: "";
   display: block;

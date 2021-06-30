@@ -23,7 +23,8 @@ const Home: NextPage<Props> = ({ ua }) => {
           </div>
         </DesktopContainer>
       ) : (
-        <div>
+        <div className="flex flex-col h-full">
+          <header className="h-16"></header>
           <MobileHome />
         </div>
       )}

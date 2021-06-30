@@ -1,13 +1,22 @@
-import { NextPage } from "next";
+import { NextPage, GetServerSideProps } from "next";
 import { Calendar } from "../components/Calendar";
-import { isBrowser } from "react-device-detect";
 import { MobileHome } from "../components/MobileHome";
 import { DesktopContainer } from "../components/DesktopContainer";
+import { useUserAgent } from "next-useragent";
+import { useMemo } from "react";
 
-const Home: NextPage = () => {
+type Props = {
+  ua: string;
+};
+
+const Home: NextPage<Props> = ({ ua }) => {
+  const device = useMemo(() => {
+    return useUserAgent(window?.navigator.userAgent ?? ua);
+  }, [ua]);
+
   return (
     <>
-      {isBrowser ? (
+      {!device.isMobile ? (
         <DesktopContainer>
           <div className="h-full w-full flex flex-col">
             <Calendar />
@@ -20,6 +29,16 @@ const Home: NextPage = () => {
       )}
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const ua = req.headers["user-agent"];
+
+  return {
+    props: {
+      ua,
+    },
+  };
 };
 
 export default Home;

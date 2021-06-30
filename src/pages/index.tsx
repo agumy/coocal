@@ -11,7 +11,7 @@ type Props = {
 
 const Home: NextPage<Props> = ({ ua }) => {
   const device = useMemo(() => {
-    return useUserAgent(window?.navigator.userAgent ?? ua);
+    return useUserAgent(global.navigator?.userAgent ?? ua);
   }, [ua]);
 
   return (

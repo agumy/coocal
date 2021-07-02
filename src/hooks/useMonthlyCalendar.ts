@@ -5,11 +5,7 @@ import {
 } from "../helper/calendar";
 
 export const useMonthlyCalendar = (initialDate: Date) => {
-  const [date, _setDate] = useState(initialDate);
-
-  const setDate = useCallback((year: number, month: number) => {
-    _setDate(new Date(year, month - 1));
-  }, []);
+  const [date, setDate] = useState(initialDate);
 
   const calendar = useMemo(() => {
     const calendarDates = createMonthlyCalendarDates(date);

@@ -1,20 +1,36 @@
-import { useMonthlyCalendar } from "../../hooks/useMonthlyCalendar";
 import classNames from "classnames";
+import subMonths from "date-fns/subMonths";
+import addMonths from "date-fns/addMonths";
+import { useMonthlyCalendar } from "../../hooks/useMonthlyCalendar";
+import { useCallback } from "react";
 
 const Weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export const MobileHome = () => {
-  const [monthlyCalendar, calenderDate] = useMonthlyCalendar(new Date());
+  const [monthlyCalendar, calenderDate, setCalendarDate] = useMonthlyCalendar(
+    new Date()
+  );
+
+  const nextMonth = useCallback(() => {
+    setCalendarDate((date) => addMonths(date, 1));
+  }, []);
+
+  const prevMonth = useCallback(() => {
+    setCalendarDate((date) => subMonths(date, 1));
+  }, []);
+
   return (
     <div className="w-full h-full flex flex-col">
       <header className="w-full h-24 sticky top-0 border-b bg-white flex flex-col">
-        <div className="h-4/6 flex items-center p-2">
+        <div className="h-4/6 flex items-center p-2 gap-3">
+          <button onClick={prevMonth}>←</button>
           <span>
             {new Intl.DateTimeFormat("ja", {
               year: "numeric",
               month: "2-digit",
             }).format(calenderDate)}
           </span>
+          <button onClick={nextMonth}>→</button>
         </div>
         <div className="h-2/6 flex">
           {[...Array(7).keys()].map((n) => (

@@ -33,6 +33,8 @@ export const MobileHome = () => {
               <div
                 className={classNames("pt-1 pl-2", {
                   "font-bold": date.getMonth() === calenderDate.getMonth(),
+                  "text-gray-400 opacity-80":
+                    date.getMonth() !== calenderDate.getMonth(),
                 })}
               >
                 {date.getDate()}

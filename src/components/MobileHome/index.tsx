@@ -8,7 +8,14 @@ export const MobileHome = () => {
   return (
     <div className="w-full h-full flex flex-col">
       <header className="w-full h-24 sticky top-0 border-b bg-white flex flex-col">
-        <div className="h-4/6" />
+        <div className="h-4/6 flex items-center p-2">
+          <span>
+            {new Intl.DateTimeFormat("ja", {
+              year: "numeric",
+              month: "2-digit",
+            }).format(calenderDate)}
+          </span>
+        </div>
         <div className="h-2/6 flex">
           {[...Array(7).keys()].map((n) => (
             <div

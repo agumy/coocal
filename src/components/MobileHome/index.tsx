@@ -5,6 +5,10 @@ import isSameDay from "date-fns/isSameDay";
 import { useMonthlyCalendar } from "../../hooks/useMonthlyCalendar";
 import { useCallback } from "react";
 import { Button } from "antd";
+import { useMonthlyMenus } from "../../hooks/useMonthlyMenus";
+import { format } from "../../helper/calendar";
+import { useMemo } from "react";
+import { groupBy } from "lodash";
 
 const Weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -12,6 +16,15 @@ export const MobileHome = () => {
   const [monthlyCalendar, calenderDate, setCalendarDate] = useMonthlyCalendar(
     new Date()
   );
+
+  const { data } = useMonthlyMenus(calenderDate);
+
+  const menus = useMemo(() => {
+    if (data) {
+      const dic = groupBy(data ?? [], (menu) => menu.date);
+      return dic;
+    }
+  }, [data]);
 
   const nextMonth = useCallback(() => {
     setCalendarDate((date) => addMonths(date, 1));
@@ -30,15 +43,15 @@ export const MobileHome = () => {
       <header className="w-full h-24 sticky top-0 border-b bg-white flex flex-col">
         <div className="h-4/6 flex justify-between px-3">
           <div className="h-full flex items-center gap-3">
-          <button onClick={prevMonth}>←</button>
-          <span>
-            {new Intl.DateTimeFormat("ja", {
-              year: "numeric",
-              month: "2-digit",
-            }).format(calenderDate)}
-          </span>
-          <button onClick={nextMonth}>→</button>
-        </div>
+            <button onClick={prevMonth}>←</button>
+            <span>
+              {new Intl.DateTimeFormat("ja", {
+                year: "numeric",
+                month: "2-digit",
+              }).format(calenderDate)}
+            </span>
+            <button onClick={nextMonth}>→</button>
+          </div>
           <div className="flex items-center">
             <Button type="default" onClick={today}>
               今日
@@ -76,7 +89,14 @@ export const MobileHome = () => {
               >
                 {date.getDate()}
               </div>
-              <div></div>
+              <div className="">
+                {menus &&
+                  menus[format(date)]?.map((menu) => (
+                    <div className="overflow-hidden whitespace-nowrap overflow-ellipsis">
+                      {menu.name}
+                    </div>
+                  ))}
+              </div>
             </div>
           ))
         )}

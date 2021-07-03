@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import subMonths from "date-fns/subMonths";
 import addMonths from "date-fns/addMonths";
+import isSameDay from "date-fns/isSameDay";
 import { useMonthlyCalendar } from "../../hooks/useMonthlyCalendar";
 import { useCallback } from "react";
 import { Button } from "antd";
@@ -70,6 +71,7 @@ export const MobileHome = () => {
                   "font-bold": date.getMonth() === calenderDate.getMonth(),
                   "text-gray-400 opacity-80":
                     date.getMonth() !== calenderDate.getMonth(),
+                  "text-blue-400": isSameDay(date, new Date()),
                 })}
               >
                 {date.getDate()}

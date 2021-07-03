@@ -3,6 +3,7 @@ import subMonths from "date-fns/subMonths";
 import addMonths from "date-fns/addMonths";
 import { useMonthlyCalendar } from "../../hooks/useMonthlyCalendar";
 import { useCallback } from "react";
+import { Button } from "antd";
 
 const Weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -19,10 +20,15 @@ export const MobileHome = () => {
     setCalendarDate((date) => subMonths(date, 1));
   }, []);
 
+  const today = useCallback(() => {
+    setCalendarDate(new Date());
+  }, []);
+
   return (
     <div className="w-full h-full flex flex-col">
       <header className="w-full h-24 sticky top-0 border-b bg-white flex flex-col">
-        <div className="h-4/6 flex items-center p-2 gap-3">
+        <div className="h-4/6 flex justify-between px-3">
+          <div className="h-full flex items-center gap-3">
           <button onClick={prevMonth}>←</button>
           <span>
             {new Intl.DateTimeFormat("ja", {
@@ -31,6 +37,12 @@ export const MobileHome = () => {
             }).format(calenderDate)}
           </span>
           <button onClick={nextMonth}>→</button>
+        </div>
+          <div className="flex items-center">
+            <Button type="default" onClick={today}>
+              今日
+            </Button>
+          </div>
         </div>
         <div className="h-2/6 flex">
           {[...Array(7).keys()].map((n) => (

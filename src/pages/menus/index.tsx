@@ -13,6 +13,7 @@ import subWeeks from "date-fns/subWeeks";
 import { useCallback } from "react";
 import { useState } from "react";
 import { format } from "../../helper/calendar";
+import Link from "next/link";
 
 type Props = {
   ua: string;
@@ -109,15 +110,17 @@ const Menus: NextPage<Props> = ({ ua }) => {
                 </div>
               ) : (
                 menus?.map((menu) => (
-                  <div
-                    className="w-full h-16 flex flex-col justify-center items-start border-b p-3"
-                    key={menu.id}
-                  >
-                    <span className="font-bold">{menu.name}</span>
-                    <span className="text-sm text-gray-400">
-                      author: {menu.author}
-                    </span>
-                  </div>
+                  <Link href={`menu?date=${format(targetDate)}&id=${menu.id}`}>
+                    <div
+                      className="w-full h-16 flex flex-col justify-center items-start border-b p-3"
+                      key={menu.id}
+                    >
+                      <span className="font-bold">{menu.name}</span>
+                      <span className="text-sm text-gray-400">
+                        author: {menu.author}
+                      </span>
+                    </div>
+                  </Link>
                 ))
               )}
             </div>

@@ -8,6 +8,9 @@ import { Spin } from "antd";
 import classNames from "classnames";
 import { useMonthlyCalendar } from "../../hooks/useMonthlyCalendar";
 import isSameDay from "date-fns/isSameDay";
+import subMonths from "date-fns/subMonths";
+import addMonths from "date-fns/addMonths";
+import { useCallback } from "react";
 
 type Props = {
   ua: string;
@@ -40,7 +43,15 @@ const Menus: NextPage<Props> = ({ ua }) => {
     }
   }, [data]);
 
-  const [calendar] = useMonthlyCalendar(targetDate);
+  const [calendar, , setCalendarDate] = useMonthlyCalendar(targetDate);
+
+  const nextMonth = useCallback(() => {
+    setCalendarDate((date) => addMonths(date, 1));
+  }, []);
+
+  const prevMonth = useCallback(() => {
+    setCalendarDate((date) => subMonths(date, 1));
+  }, []);
 
   const weekly = useMemo(() => {
     return calendar.find((week) =>
@@ -57,11 +68,15 @@ const Menus: NextPage<Props> = ({ ua }) => {
           <header className="h-16 border-b"></header>
           <main className="h-full w-full flex flex-col">
             <header className="flex flex-col w-full h-24 border-b">
-              <div className="font-bold flex justify-center items-center text-lg">
-                {new Intl.DateTimeFormat("en-US", {
-                  year: "numeric",
-                  month: "long",
-                }).format(targetDate)}
+              <div className="flex justify-between h-full items-center px-3">
+                <button onClick={prevMonth}>←</button>
+                <div className="font-bold text-lg">
+                  {new Intl.DateTimeFormat("en-US", {
+                    year: "numeric",
+                    month: "long",
+                  }).format(targetDate)}
+                </div>
+                <button onClick={nextMonth}>→</button>
               </div>
               <div className="flex items-end h-full pb-1">
                 {[...Array(7).keys()].map((n) => (

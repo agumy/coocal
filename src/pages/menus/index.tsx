@@ -81,11 +81,23 @@ const Menus: NextPage<Props> = ({ ua }) => {
                 ))}
               </div>
             </header>
-            <div className="h-full w-full">
+            <div className="h-full w-full overflow-auto">
               {isLoading ? (
-                <Spin />
+                <div className="w-full h-full flex justify-center items-center">
+                  <Spin tip="loading..." />
+                </div>
               ) : (
-                menus?.map((menu) => <div key={menu.id}>{menu.name}</div>)
+                menus?.map((menu) => (
+                  <div
+                    className="w-full h-16 flex flex-col justify-center items-start border-b p-3"
+                    key={menu.id}
+                  >
+                    <span className="font-bold">{menu.name}</span>
+                    <span className="text-sm text-gray-400">
+                      author: {menu.author}
+                    </span>
+                  </div>
+                ))
               )}
             </div>
           </main>

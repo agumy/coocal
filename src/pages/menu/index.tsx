@@ -82,7 +82,7 @@ const Menu: NextPage<Props> = ({ ua }) => {
             ) : (
               menu && (
                 <div className="w-full flex flex-col justify-center items-start p-3">
-                  <h1 className="text-xl">{menu.name}</h1>
+                  <h1 className="text-xl pb-2">{menu.name}</h1>
                   <table className="border w-full">
                     <thead className="w-full border-b">
                       <th className="border-r w-5/7 pl-2">材料名</th>
@@ -97,6 +97,7 @@ const Menu: NextPage<Props> = ({ ua }) => {
                       ))}
                     </tbody>
                   </table>
+                  <span>{menu.url}</span>
                 </div>
               )
             )}

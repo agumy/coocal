@@ -5,6 +5,7 @@ import { useRouter } from "next/dist/client/router";
 import { useMemo } from "react";
 import { useMonthlyMenus } from "../../hooks/useMonthlyMenus";
 import { Spin } from "antd";
+import { PlusCircleFilled } from "@ant-design/icons";
 import classNames from "classnames";
 import { useMonthlyCalendar } from "../../hooks/useMonthlyCalendar";
 import isSameDay from "date-fns/isSameDay";
@@ -125,6 +126,11 @@ const Menus: NextPage<Props> = ({ ua }) => {
               )}
             </div>
           </main>
+          <div className="fixed bottom-0 right-0">
+            <Link href={`/menu/new?date=${format(targetDate)}`}>
+              <PlusCircleFilled className="text-6xl pr-4 pb-4" />
+            </Link>
+          </div>
         </div>
       )}
     </>

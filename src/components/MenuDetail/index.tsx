@@ -29,12 +29,12 @@ export const MenuDetail = ({ date, menu, calendarDate }: Props) => {
 
   const onSubmit = useMemo(
     () =>
-      handleSubmit((data) => {
+      handleSubmit(async (data) => {
         const ingredientList = data.ingredientList.filter(
           (i) => i.name && i.amount
         );
         if (menu) {
-          updateMenu.mutate({
+          await updateMenu.mutate({
             ...menu,
             date: format(date),
             name: data.title,
@@ -43,7 +43,7 @@ export const MenuDetail = ({ date, menu, calendarDate }: Props) => {
             url: data.url,
           });
         } else {
-          mutate({
+          await mutate({
             date: format(date),
             name: data.title,
             shared: data.shared,
@@ -51,6 +51,7 @@ export const MenuDetail = ({ date, menu, calendarDate }: Props) => {
             url: data.url,
           });
         }
+        document.body.click();
       }),
     [handleSubmit, mutate]
   );

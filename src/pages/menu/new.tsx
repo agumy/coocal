@@ -12,6 +12,8 @@ import { useState } from "react";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useMenuForm } from "../../components/MenuDetail/useMenuForm";
+import { useCreateMenu } from "../../hooks/useCreateMenu";
+import { format } from "../../helper/calendar";
 
 type Props = {
   ua: string;
@@ -54,11 +56,33 @@ const New: NextPage<Props> = ({ ua }) => {
   }, [calendar, targetDate]);
 
   const {
-    form: { register },
+    form: { register, handleSubmit },
     fieldArray: { fields, remove, append },
     importMenu,
     isLoadingImport,
   } = useMenuForm(null as any);
+
+  const { mutate, isLoading } = useCreateMenu(targetDate);
+
+  const onSubmit = useMemo(
+    () =>
+      handleSubmit(async (data) => {
+        const ingredientList = data.ingredientList.filter(
+          (i) => i.name && i.amount
+        );
+
+        await mutate({
+          date: format(targetDate),
+          name: data.title,
+          shared: data.shared,
+          ingredientList,
+          url: data.url,
+        });
+
+        router.push(`/menus?date=${format(targetDate)}`);
+      }),
+    [handleSubmit, mutate]
+  );
 
   return (
     <>
@@ -68,7 +92,10 @@ const New: NextPage<Props> = ({ ua }) => {
         <div className="flex flex-col h-full">
           <header className="h-16 border-b"></header>
           <main className="h-full w-full flex flex-col my-4 overflow-auto">
-            <form className="flex flex-col gap-3 w-full h-full  px-2">
+            <form
+              className="flex flex-col gap-3 w-full h-full px-2"
+              onSubmit={onSubmit}
+            >
               <div className="flex flex-col gap-1">
                 <label className="font-bold">献立名</label>
                 <input
@@ -120,6 +147,12 @@ const New: NextPage<Props> = ({ ua }) => {
                       defaultValue={field.amount}
                       {...register(`ingredientList.${i}.amount` as const)}
                     />
+                    <input
+                      type="checkbox"
+                      className="hidden"
+                      defaultChecked={field.hasThis}
+                      {...register(`ingredientList.${i}.hasThis` as const)}
+                    />
                     <MinusCircleOutlined
                       className="text-lg"
                       onClick={() => remove(i)}
@@ -143,7 +176,7 @@ const New: NextPage<Props> = ({ ua }) => {
                 <Button type="default" htmlType="submit">
                   破棄
                 </Button>
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" htmlType="submit" loading={isLoading}>
                   保存
                 </Button>
               </div>

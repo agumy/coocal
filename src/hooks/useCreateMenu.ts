@@ -25,9 +25,6 @@ export const useCreateMenu = (date: Date) => {
         }
         return [...oldData, data];
       });
-
-      // FIXME: UIの責務
-      document.body.click();
     },
   });
 

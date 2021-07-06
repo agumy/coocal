@@ -23,7 +23,7 @@ export default {
         ...param,
       },
     });
-    return response.data.menu;
+    return response.data;
   },
   update: async (param: Menu): Promise<Menu> => {
     const response = await fetch({

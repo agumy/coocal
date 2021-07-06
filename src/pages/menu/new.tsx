@@ -67,8 +67,8 @@ const New: NextPage<Props> = ({ ua }) => {
       ) : (
         <div className="flex flex-col h-full">
           <header className="h-16 border-b"></header>
-          <main className="h-full w-full flex flex-col overflow-auto">
-            <form className="flex flex-col gap-3 w-full h-full  px-2 pt-4">
+          <main className="h-full w-full flex flex-col my-4 overflow-auto">
+            <form className="flex flex-col gap-3 w-full h-full  px-2">
               <div className="flex flex-col gap-1">
                 <label className="font-bold">献立名</label>
                 <input

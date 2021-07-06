@@ -58,7 +58,7 @@ const New: NextPage<Props> = ({ ua }) => {
     fieldArray: { fields, remove, append },
     importMenu,
     isLoadingImport,
-  } = useMenuForm();
+  } = useMenuForm(null as any);
 
   return (
     <>

@@ -56,6 +56,8 @@ const New: NextPage<Props> = ({ ua }) => {
   const {
     form: { register },
     fieldArray: { fields, remove, append },
+    importMenu,
+    isLoadingImport,
   } = useMenuForm();
 
   return (
@@ -84,7 +86,14 @@ const New: NextPage<Props> = ({ ua }) => {
                     placeholder="URLを入力してください"
                     {...register("url")}
                   />
-                  <Button>読み取り</Button>
+                  <Button
+                    onClick={() => {
+                      importMenu();
+                    }}
+                    loading={isLoadingImport}
+                  >
+                    読み取り
+                  </Button>
                 </div>
               </div>
               <div className="flex flex-col gap-2">
@@ -95,14 +104,21 @@ const New: NextPage<Props> = ({ ua }) => {
                   <div style={{ width: "18px" }}></div>
                 </div>
                 {fields.map((field, i) => (
-                  <div className="flex gap-2 items-center w-full">
+                  <div
+                    key={field.id}
+                    className="flex gap-2 items-center w-full"
+                  >
                     <input
                       className="border px-2 py-1 text-sm w-3/4"
                       type="text"
+                      defaultValue={field.name}
+                      {...register(`ingredientList.${i}.name` as const)}
                     />
                     <input
                       className="border px-2 py-1 text-sm w-1/4"
                       type="text"
+                      defaultValue={field.amount}
+                      {...register(`ingredientList.${i}.amount` as const)}
                     />
                     <MinusCircleOutlined
                       className="text-lg"

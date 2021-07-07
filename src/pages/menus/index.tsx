@@ -86,14 +86,17 @@ const Menus: NextPage<Props> = ({ ua }) => {
               </div>
               <div className="flex items-end h-full pb-1">
                 {[...Array(7).keys()].map((n) => (
-                  <div className="w-1/7 flex flex-col justify-center items-center">
+                  <div
+                    key={n}
+                    className="w-1/7 flex flex-col justify-center items-center"
+                  >
                     <div>{Weekday[n]}</div>
                     {weekly && (
                       <div
                         role="button"
                         onClick={() => setTargetDate(weekly[n])}
                         className={classNames({
-                          "text-blue-400":
+                          "rounded-full bg-blue-600 px-2 text-white font-light inline-block":
                             weekly[n]?.getDate() === targetDate.getDate(),
                         })}
                       >

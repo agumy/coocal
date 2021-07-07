@@ -4,7 +4,7 @@ import parse from "date-fns/parse";
 import { useRouter } from "next/dist/client/router";
 import { useMemo } from "react";
 import { useMonthlyMenus } from "../../hooks/useMonthlyMenus";
-import { Spin } from "antd";
+import { Spin, Result } from "antd";
 import { PlusCircleFilled } from "@ant-design/icons";
 import classNames from "classnames";
 import { useMonthlyCalendar } from "../../hooks/useMonthlyCalendar";
@@ -108,12 +108,12 @@ const Menus: NextPage<Props> = ({ ua }) => {
               </div>
             </header>
             <div className="h-full w-full overflow-auto">
-              {isLoading ? (
+              {!menus || isLoading ? (
                 <div className="w-full h-full flex justify-center items-center">
                   <Spin tip="loading..." />
                 </div>
-              ) : (
-                menus?.map((menu) => (
+              ) : menus && menus.length ? (
+                menus.map((menu) => (
                   <Link href={`menu?date=${format(targetDate)}&id=${menu.id}`}>
                     <div
                       className="w-full h-16 flex flex-col justify-center items-start border-b p-3"
@@ -126,6 +126,8 @@ const Menus: NextPage<Props> = ({ ua }) => {
                     </div>
                   </Link>
                 ))
+              ) : (
+                <Result title="献立が登録されていません" />
               )}
             </div>
           </main>

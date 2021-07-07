@@ -90,6 +90,7 @@ export const MobileHome = () => {
                     <div
                       className={classNames("w-1/7 flex flex-col border-b", {
                         "border-r": date.getDay() !== 6,
+                        [`h-1/${monthlyCalendar.length}`]: true,
                       })}
                     >
                       <div

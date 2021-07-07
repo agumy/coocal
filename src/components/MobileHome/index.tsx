@@ -97,10 +97,10 @@ export const MobileHome = () => {
                         className={classNames(
                           "flex justify-center items-center py-1",
                           {
-                          "font-bold":
-                            date.getMonth() === calenderDate.getMonth(),
-                          "text-gray-400 opacity-80":
-                            date.getMonth() !== calenderDate.getMonth(),
+                            "font-bold":
+                              date.getMonth() === calenderDate.getMonth(),
+                            "text-gray-400 opacity-80":
+                              date.getMonth() !== calenderDate.getMonth(),
                           }
                         )}
                       >
@@ -108,17 +108,13 @@ export const MobileHome = () => {
                           className={classNames("inline-block", {
                             "rounded-full bg-blue-600 px-2 text-white font-light":
                               isSameDay(date, new Date()),
-                        })}
-                      >
-                        {date.getDate()}
+                          })}
+                        >
+                          {date.getDate()}
+                        </div>
                       </div>
-                      <div className="">
-                        {menus &&
-                          menus[format(date)]?.map((menu) => (
-                            <div className="overflow-hidden whitespace-nowrap overflow-ellipsis">
-                              {menu.name}
-                            </div>
-                          ))}
+                      <div className="flex items-start justify-center">
+                        {menus && menus[format(date)] && <div>🍚</div>}
                       </div>
                     </div>
                   </Link>

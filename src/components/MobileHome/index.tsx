@@ -93,7 +93,9 @@ export const MobileHome = () => {
                       })}
                     >
                       <div
-                        className={classNames("pt-1 pl-2", {
+                        className={classNames(
+                          "flex justify-center items-center py-1",
+                          {
                           "font-bold":
                             date.getMonth() === calenderDate.getMonth(),
                           "text-gray-400 opacity-80":

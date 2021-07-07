@@ -100,7 +100,13 @@ export const MobileHome = () => {
                             date.getMonth() === calenderDate.getMonth(),
                           "text-gray-400 opacity-80":
                             date.getMonth() !== calenderDate.getMonth(),
-                          "text-blue-400": isSameDay(date, new Date()),
+                          }
+                        )}
+                      >
+                        <div
+                          className={classNames("inline-block", {
+                            "rounded-full bg-blue-600 px-2 text-white font-light":
+                              isSameDay(date, new Date()),
                         })}
                       >
                         {date.getDate()}

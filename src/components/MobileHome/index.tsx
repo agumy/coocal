@@ -61,7 +61,7 @@ export const MobileHome = () => {
               </div>
               <div className="flex items-center">
                 <Button type="default" onClick={today}>
-                  今日
+                  Today
                 </Button>
               </div>
             </div>

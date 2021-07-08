@@ -16,6 +16,8 @@ import { useMenuForm } from "../../components/MenuDetail/useMenuForm";
 import { useCreateMenu } from "../../hooks/useCreateMenu";
 import { useReducer } from "react";
 import { useUpdateMenu } from "../../hooks/useUpdateMenu";
+import { useDeleteMenu } from "../../hooks/useDeleteMenu";
+import { format } from "../../helper/calendar";
 
 type Props = {
   ua: string;
@@ -80,6 +82,7 @@ const Menu: NextPage<Props> = ({ ua }) => {
   } = useMenuForm(menu!);
 
   const update = useUpdateMenu(targetDate);
+  const deleteMenu = useDeleteMenu(targetDate);
 
   const onSubmit = useMemo(
     () =>
@@ -99,6 +102,13 @@ const Menu: NextPage<Props> = ({ ua }) => {
       }),
     [handleSubmit, menu]
   );
+
+  const onDelete = useCallback(async () => {
+    if (menu) {
+      await deleteMenu.mutateAsync({ id: menu.id });
+      router.replace(`/menus?date=${format(targetDate)}`);
+    }
+  }, [deleteMenu, menu]);
 
   const [isEdit, toggle] = useReducer((prev) => !prev, false);
 
@@ -241,6 +251,15 @@ const Menu: NextPage<Props> = ({ ua }) => {
                             </Button>
                           </div>
                           <div className="flex gap-2 justify-center">
+                            <Button
+                              onClick={onDelete}
+                              type="default"
+                              danger
+                              htmlType="button"
+                              loading={deleteMenu.isLoading}
+                            >
+                              削除
+                            </Button>
                             <Button
                               type="primary"
                               htmlType="submit"

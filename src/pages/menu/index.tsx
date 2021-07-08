@@ -15,6 +15,7 @@ import { useState } from "react";
 import { useMenuForm } from "../../components/MenuDetail/useMenuForm";
 import { useCreateMenu } from "../../hooks/useCreateMenu";
 import { useReducer } from "react";
+import { useUpdateMenu } from "../../hooks/useUpdateMenu";
 
 type Props = {
   ua: string;
@@ -78,14 +79,25 @@ const Menu: NextPage<Props> = ({ ua }) => {
     isLoadingImport,
   } = useMenuForm(menu!);
 
+  const update = useUpdateMenu(targetDate);
+
   const onSubmit = useMemo(
     () =>
       handleSubmit(async (data) => {
         const ingredientList = data.ingredientList.filter(
           (i) => i.name && i.amount
         );
+        if (menu) {
+          await update.mutateAsync({
+            ...menu,
+            ...data,
+            ingredientList,
+          });
+
+          toggle();
+        }
       }),
-    [handleSubmit]
+    [handleSubmit, menu]
   );
 
   const [isEdit, toggle] = useReducer((prev) => !prev, false);
@@ -232,7 +244,7 @@ const Menu: NextPage<Props> = ({ ua }) => {
                             <Button
                               type="primary"
                               htmlType="submit"
-                              loading={isLoading}
+                              loading={update.isLoading}
                             >
                               保存
                             </Button>

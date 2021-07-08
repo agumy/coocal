@@ -14,6 +14,7 @@ import { useCallback } from "react";
 import { useState } from "react";
 import { useMenuForm } from "../../components/MenuDetail/useMenuForm";
 import { useCreateMenu } from "../../hooks/useCreateMenu";
+import { useReducer } from "react";
 
 type Props = {
   ua: string;
@@ -87,7 +88,7 @@ const Menu: NextPage<Props> = ({ ua }) => {
     [handleSubmit]
   );
 
-  const [isEdit] = useState(false);
+  const [isEdit, toggle] = useReducer((prev) => !prev, false);
 
   return (
     <>
@@ -111,7 +112,12 @@ const Menu: NextPage<Props> = ({ ua }) => {
                       onSubmit={onSubmit}
                     >
                       <div className="flex flex-col gap-1">
-                        <label className="font-bold">献立名</label>
+                        <div className="flex justify-between items-end">
+                          <label className="font-bold">献立名</label>
+                          <Button className="mb-1" onClick={() => toggle()}>
+                            {isEdit ? "中止" : "編集"}
+                          </Button>
+                        </div>
                         {isEdit ? (
                           <input
                             className="border px-2 py-1 text-sm"
@@ -223,9 +229,6 @@ const Menu: NextPage<Props> = ({ ua }) => {
                             </Button>
                           </div>
                           <div className="flex gap-2 justify-center">
-                            <Button type="default" htmlType="submit">
-                              破棄
-                            </Button>
                             <Button
                               type="primary"
                               htmlType="submit"

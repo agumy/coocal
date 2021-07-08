@@ -35,7 +35,7 @@ export const useMenuForm = (menu: Menu) => {
     if (menu) {
       form.setValue("title", menu.name);
       form.setValue("url", menu.url);
-      fieldArray.insert(0, menu.ingredientList);
+      form.setValue("ingredientList", menu.ingredientList);
     }
   }, [menu]);
 

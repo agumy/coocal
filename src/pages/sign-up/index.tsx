@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { auth } from "../../firebase";
 import Spinner from "react-bootstrap/Spinner";
-import { DesktopContainer } from "../../components/DesktopContainer";
+import { DesktopContainer } from "../../components/desktop/DesktopContainer";
 
 const Register: NextPage = () => {
   const {

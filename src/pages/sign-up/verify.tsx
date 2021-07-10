@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { useCallback, useReducer } from "react";
 import { useUserContext } from "../../context/UserContext";
 import Toast from "react-bootstrap/Toast";
-import { DesktopContainer } from "../../components/DesktopContainer";
+import { DesktopContainer } from "../../components/desktop/DesktopContainer";
 
 const Verify: NextPage = () => {
   const { user } = useUserContext();

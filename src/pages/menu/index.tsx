@@ -12,7 +12,7 @@ import addWeeks from "date-fns/addWeeks";
 import subWeeks from "date-fns/subWeeks";
 import { useCallback } from "react";
 import { useState } from "react";
-import { useMenuForm } from "../../components/MenuDetail/useMenuForm";
+import { useMenuForm } from "../../hooks/useMenuForm";
 import { useReducer } from "react";
 import { useUpdateMenu } from "../../hooks/useUpdateMenu";
 import { useDeleteMenu } from "../../hooks/useDeleteMenu";

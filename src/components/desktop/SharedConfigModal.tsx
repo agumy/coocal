@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Modal, Button, Spin, Input } from "antd";
 import { useMutation, useQuery } from "react-query";
-import SharedRepository from "../repository/SharedRepository";
+import SharedRepository from "../../repository/SharedRepository";
 
 export const SharedConfigModal = (
   props: React.ComponentProps<typeof Modal>

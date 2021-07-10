@@ -1,7 +1,7 @@
 import { useCallback, useReducer } from "react";
 import Link from "next/link";
-import { auth } from "../firebase";
-import { useUserContext } from "../context/UserContext";
+import { auth } from "../../firebase";
+import { useUserContext } from "../../context/UserContext";
 import { SharedConfigModal } from "./SharedConfigModal";
 
 export const Header = () => {

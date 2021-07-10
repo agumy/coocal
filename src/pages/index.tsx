@@ -1,7 +1,7 @@
 import { NextPage, GetServerSideProps } from "next";
-import { Calendar } from "../components/Calendar";
-import { MobileHome } from "../components/MobileHome";
-import { DesktopContainer } from "../components/DesktopContainer";
+import { Calendar } from "../components/desktop/Calendar";
+import { MobileHome } from "../components/mobile/pages/Home";
+import { DesktopContainer } from "../components/desktop/DesktopContainer";
 import { useUserAgent } from "next-useragent";
 import { useMemo } from "react";
 

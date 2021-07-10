@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useMutation, useQuery } from "react-query";
-import { Menu } from "../../models/Menu";
+import { Menu } from "../models/Menu";
 
 type MenuFormValue = {
   ingredientList: {

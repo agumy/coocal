@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { auth } from "../../firebase";
 import { generateMessageByCode } from "../../helper/generateMessageByCode";
 import Spinner from "react-bootstrap/Spinner";
-import { DesktopContainer } from "../../components/DesktopContainer";
+import { DesktopContainer } from "../../components/desktop/DesktopContainer";
 
 const Login: NextPage = () => {
   const {

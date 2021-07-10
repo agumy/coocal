@@ -119,7 +119,10 @@ const Menu: NextPage<Props> = ({ ua }) => {
       {!device.isMobile ? (
         <div></div>
       ) : (
-        <MobileContainer>
+        <MobileContainer
+          hrefTitle="一覧"
+          href={`/menus?date=${format(targetDate)}`}
+        >
           <main className="h-full w-full flex flex-col overflow-auto">
             {isLoading ? (
               <div className="w-full h-full flex justify-center items-center">

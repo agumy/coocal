@@ -1,10 +1,8 @@
-import { GetServerSideProps, NextPage } from "next";
+import { NextPage } from "next";
 import { useUserAgent } from "next-useragent";
 import parse from "date-fns/parse";
 import { useRouter } from "next/dist/client/router";
-import { useMemo } from "react";
-import { useMonthlyCalendar } from "../../hooks/useMonthlyCalendar";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useMenuForm } from "../../hooks/useMenuForm";
@@ -33,8 +31,6 @@ const New: NextPage<Props> = ({ ua }) => {
   const [targetDate, setTargetDate] = useState(
     parse(targetDateString, "yyyy-MM-dd", new Date())
   );
-
-  const [calendar, , setCalendarDate] = useMonthlyCalendar(targetDate);
 
   const {
     form: { register, handleSubmit },
@@ -70,7 +66,10 @@ const New: NextPage<Props> = ({ ua }) => {
       {!device.isMobile ? (
         <div></div>
       ) : (
-        <MobileContainer>
+        <MobileContainer
+          hrefTitle="一覧"
+          href={`/menus?date=${format(targetDate)}`}
+        >
           <main className="h-full w-full flex flex-col overflow-auto">
             <WeekNavigator
               value={targetDate}

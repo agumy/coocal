@@ -85,15 +85,16 @@ export const MobileHome = () => {
                 <Spin tip="Loading..." />
               </div>
             ) : (
-              monthlyCalendar.map((weekly) =>
+              monthlyCalendar.map((weekly, weeklyIndex) =>
                 weekly.map((date) => (
                   <Link
                     key={date.toISOString()}
                     href={`/menus?date=${format(date)}`}
                   >
                     <div
-                      className={classNames("w-1/7 flex flex-col border-b", {
+                      className={classNames("w-1/7 flex flex-col", {
                         "border-r": date.getDay() !== 6,
+                        "border-b": weeklyIndex !== monthlyCalendar.length - 1,
                         [`h-1/${monthlyCalendar.length}`]: true,
                       })}
                     >

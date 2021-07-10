@@ -5,12 +5,12 @@ import { useUserAgent } from "next-useragent";
 import parse from "date-fns/parse";
 import { useRouter } from "next/dist/client/router";
 import { Spin, Result } from "antd";
-import { PlusCircleFilled } from "@ant-design/icons";
 
 import { WeekNavigator } from "../../components/mobile/organisms/WeekNavigator";
 import { format } from "../../helper/calendar";
 import { useMonthlyMenus } from "../../hooks/useMonthlyMenus";
 import { MobileContainer } from "../../components/mobile/containers/MobileContainer";
+import { AddMenuButton } from "../../components/mobile/organisms/AddMenuButton";
 
 type Props = {
   ua: string;
@@ -78,11 +78,7 @@ const Menus: NextPage<Props> = ({ ua }) => {
                 )}
               </div>
             </main>
-            <div className="fixed bottom-12 right-0">
-              <Link href={`/menu/new?date=${format(targetDate)}`}>
-                <PlusCircleFilled className="text-6xl pr-4 pb-4" />
-              </Link>
-            </div>
+            <AddMenuButton date={targetDate} />
           </>
         </MobileContainer>
       )}

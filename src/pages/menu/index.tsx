@@ -137,7 +137,7 @@ const Menu: NextPage<Props> = ({ ua }) => {
                       router.push(`/menus?date=${format(date)}`);
                     }}
                   />
-                  <main className="h-full w-full flex flex-col my-4 overflow-auto">
+                  <main className="h-full w-full flex flex-col overflow-auto">
                     <form
                       className="flex flex-col gap-3 w-full h-full px-2"
                       onSubmit={onSubmit}

@@ -2,6 +2,7 @@ import {
   CalendarOutlined,
   LeftOutlined,
   SnippetsOutlined,
+  UnorderedListOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/dist/client/router";
@@ -42,7 +43,9 @@ export const MobileContainer = ({
         <div className="border-r w-1/4 flex items-center justify-center">
           <SnippetsOutlined className="text-2xl" />
         </div>
-        <div className="border-r w-1/4"></div>
+        <div className="border-r w-1/4 flex items-center justify-center">
+          <UnorderedListOutlined className="text-2xl" />
+        </div>
         <div className="border-r w-1/4 flex items-center justify-center">
           <UserOutlined className="text-2xl" />
         </div>

@@ -19,10 +19,7 @@ type Props = {
 };
 
 const New: NextPage<Props> = ({ ua }) => {
-  const device = useMemo(() => {
-    // eslint-disable-next-line
-    return useUserAgent(global.navigator?.userAgent ?? ua);
-  }, [ua]);
+  const device = useUserAgent(global.navigator?.userAgent ?? {});
 
   const router = useRouter();
 
@@ -177,14 +174,14 @@ const New: NextPage<Props> = ({ ua }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const ua = req.headers["user-agent"];
+// export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+//   const ua = req.headers["user-agent"];
 
-  return {
-    props: {
-      ua,
-    },
-  };
-};
+//   return {
+//     props: {
+//       ua,
+//     },
+//   };
+// };
 
 export default New;

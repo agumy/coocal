@@ -130,7 +130,9 @@ const Menu: NextPage<Props> = ({ ua }) => {
                 <div className="flex flex-col h-full">
                   <WeekNavigator
                     value={targetDate}
-                    onSelect={(date) => setTargetDate(date)}
+                    onSelect={(date) => {
+                      router.push(`/menus?date=${format(date)}`);
+                    }}
                   />
                   <main className="h-full w-full flex flex-col my-4 overflow-auto">
                     <form

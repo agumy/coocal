@@ -15,6 +15,7 @@ import { useMenuForm } from "../../components/MenuDetail/useMenuForm";
 import { useCreateMenu } from "../../hooks/useCreateMenu";
 import { format } from "../../helper/calendar";
 import { WeekNavigator } from "../../components/mobile/organisms/WeekNavigator";
+import Link from "next/link";
 
 type Props = {
   ua: string;
@@ -178,9 +179,11 @@ const New: NextPage<Props> = ({ ua }) => {
                 </Button>
               </div>
               <div className="flex gap-2 justify-center">
-                <Button type="default" htmlType="submit">
-                  破棄
-                </Button>
+                <Link href={`/menus?date=${format(targetDate)}`}>
+                  <Button type="default" htmlType="button">
+                    破棄
+                  </Button>
+                </Link>
                 <Button type="primary" htmlType="submit" loading={isLoading}>
                   保存
                 </Button>

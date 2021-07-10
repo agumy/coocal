@@ -1,26 +1,19 @@
+import { useMemo, useState } from "react";
 import { GetServerSideProps, NextPage } from "next";
+import Link from "next/link";
 import { useUserAgent } from "next-useragent";
 import parse from "date-fns/parse";
 import { useRouter } from "next/dist/client/router";
-import { useMemo } from "react";
-import { useMonthlyMenus } from "../../hooks/useMonthlyMenus";
 import { Spin, Result } from "antd";
 import { PlusCircleFilled } from "@ant-design/icons";
-import classNames from "classnames";
-import { useMonthlyCalendar } from "../../hooks/useMonthlyCalendar";
-import isSameDay from "date-fns/isSameDay";
-import addWeeks from "date-fns/addWeeks";
-import subWeeks from "date-fns/subWeeks";
-import { useCallback } from "react";
-import { useState } from "react";
+
+import { WeekNavigator } from "../../components/mobile/organisms/WeekNavigator";
 import { format } from "../../helper/calendar";
-import Link from "next/link";
+import { useMonthlyMenus } from "../../hooks/useMonthlyMenus";
 
 type Props = {
   ua: string;
 };
-
-const Weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const Menus: NextPage<Props> = ({ ua }) => {
   const device = useMemo(() => {
@@ -47,24 +40,6 @@ const Menus: NextPage<Props> = ({ ua }) => {
     }
   }, [data, targetDate]);
 
-  const [calendar, , setCalendarDate] = useMonthlyCalendar(targetDate);
-
-  const nextWeek = useCallback(() => {
-    setCalendarDate((date) => addWeeks(date, 1));
-    setTargetDate((date) => addWeeks(date, 1));
-  }, []);
-
-  const prevWeek = useCallback(() => {
-    setCalendarDate((date) => subWeeks(date, 1));
-    setTargetDate((date) => subWeeks(date, 1));
-  }, []);
-
-  const weekly = useMemo(() => {
-    return calendar.find((week) =>
-      week.some((date) => isSameDay(date, targetDate))
-    );
-  }, [calendar, targetDate]);
-
   return (
     <>
       {!device.isMobile ? (
@@ -73,40 +48,7 @@ const Menus: NextPage<Props> = ({ ua }) => {
         <div className="flex flex-col h-full">
           <header className="h-16 border-b"></header>
           <main className="h-full w-full flex flex-col">
-            <header className="flex flex-col w-full h-24 border-b">
-              <div className="flex justify-between h-full items-center px-3">
-                <button onClick={prevWeek}>←</button>
-                <div className="font-bold text-lg">
-                  {new Intl.DateTimeFormat("en-US", {
-                    year: "numeric",
-                    month: "long",
-                  }).format(targetDate)}
-                </div>
-                <button onClick={nextWeek}>→</button>
-              </div>
-              <div className="flex items-end h-full pb-1">
-                {[...Array(7).keys()].map((n) => (
-                  <div
-                    key={n}
-                    className="w-1/7 flex flex-col justify-center items-center"
-                  >
-                    <div>{Weekday[n]}</div>
-                    {weekly && (
-                      <div
-                        role="button"
-                        onClick={() => setTargetDate(weekly[n])}
-                        className={classNames({
-                          "rounded-full bg-blue-600 px-2 text-white font-light inline-block":
-                            weekly[n]?.getDate() === targetDate.getDate(),
-                        })}
-                      >
-                        {weekly[n]?.getDate()}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </header>
+            <WeekNavigator value={targetDate} onSelect={setTargetDate} />
             <div className="h-full w-full overflow-auto">
               {!menus || isLoading ? (
                 <div className="w-full h-full flex justify-center items-center">

@@ -139,7 +139,7 @@ const Menu: NextPage<Props> = ({ ua }) => {
                   />
                   <main className="h-full w-full flex flex-col overflow-auto">
                     <form
-                      className="flex flex-col gap-3 w-full h-full px-2"
+                      className="flex flex-col gap-3 w-full h-full px-2 py-2"
                       onSubmit={onSubmit}
                     >
                       <div className="flex flex-col gap-1">
@@ -186,7 +186,7 @@ const Menu: NextPage<Props> = ({ ua }) => {
                           )}
                         </div>
                       </div>
-                      <div className="flex flex-col gap-2">
+                      <div className="flex flex-col gap-1">
                         <span className="font-bold">材料</span>
                         <div className="flex gap-2 items-center w-full">
                           <span className="text-sm w-3/4">材料名</span>

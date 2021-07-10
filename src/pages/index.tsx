@@ -4,6 +4,7 @@ import { MobileHome } from "../components/mobile/pages/Home";
 import { DesktopContainer } from "../components/desktop/DesktopContainer";
 import { useUserAgent } from "next-useragent";
 import { useMemo } from "react";
+import { MobileContainer } from "../components/mobile/containers/MobileContainer";
 
 type Props = {
   ua: string;
@@ -24,10 +25,9 @@ const Home: NextPage<Props> = ({ ua }) => {
           </div>
         </DesktopContainer>
       ) : (
-        <div className="flex flex-col h-full">
-          <header className="h-16 border-b"></header>
+        <MobileContainer>
           <MobileHome />
-        </div>
+        </MobileContainer>
       )}
     </>
   );

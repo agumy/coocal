@@ -12,6 +12,7 @@ import { useCreateMenu } from "../../hooks/useCreateMenu";
 import { format } from "../../helper/calendar";
 import { WeekNavigator } from "../../components/mobile/organisms/WeekNavigator";
 import Link from "next/link";
+import { MobileContainer } from "../../components/mobile/containers/MobileContainer";
 
 type Props = {
   ua: string;
@@ -72,8 +73,7 @@ const New: NextPage<Props> = ({ ua }) => {
       {!device.isMobile ? (
         <div></div>
       ) : (
-        <div className="flex flex-col h-full">
-          <header className="h-16 border-b"></header>
+        <MobileContainer>
           <main className="h-full w-full flex flex-col my-4 overflow-auto">
             <WeekNavigator
               value={targetDate}
@@ -171,7 +171,7 @@ const New: NextPage<Props> = ({ ua }) => {
               </div>
             </form>
           </main>
-        </div>
+        </MobileContainer>
       )}
     </>
   );

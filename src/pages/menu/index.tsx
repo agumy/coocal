@@ -17,6 +17,7 @@ import { useReducer } from "react";
 import { useUpdateMenu } from "../../hooks/useUpdateMenu";
 import { useDeleteMenu } from "../../hooks/useDeleteMenu";
 import { format } from "../../helper/calendar";
+import { MobileContainer } from "../../components/mobile/containers/MobileContainer";
 
 type Props = {
   ua: string;
@@ -117,8 +118,7 @@ const Menu: NextPage<Props> = ({ ua }) => {
       {!device.isMobile ? (
         <div></div>
       ) : (
-        <div className="flex flex-col h-full">
-          <header className="h-16 border-b"></header>
+        <MobileContainer>
           <main className="h-full w-full flex flex-col overflow-auto">
             {isLoading ? (
               <div className="w-full h-full flex justify-center items-center">
@@ -276,7 +276,7 @@ const Menu: NextPage<Props> = ({ ua }) => {
               )
             )}
           </main>
-        </div>
+        </MobileContainer>
       )}
     </>
   );

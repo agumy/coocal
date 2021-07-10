@@ -17,6 +17,7 @@ type Props = {
 
 const Menus: NextPage<Props> = ({ ua }) => {
   const device = useMemo(() => {
+    // eslint-disable-next-line
     return useUserAgent(global.navigator?.userAgent ?? ua);
   }, [ua]);
 
@@ -56,7 +57,10 @@ const Menus: NextPage<Props> = ({ ua }) => {
                 </div>
               ) : menus && menus.length ? (
                 menus.map((menu) => (
-                  <Link href={`menu?date=${format(targetDate)}&id=${menu.id}`}>
+                  <Link
+                    key={menu.id}
+                    href={`menu?date=${format(targetDate)}&id=${menu.id}`}
+                  >
                     <div
                       className="w-full h-16 flex flex-col justify-center items-start border-b p-3"
                       key={menu.id}

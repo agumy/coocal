@@ -19,6 +19,7 @@ type Props = {
 
 const New: NextPage<Props> = ({ ua }) => {
   const device = useMemo(() => {
+    // eslint-disable-next-line
     return useUserAgent(global.navigator?.userAgent ?? ua);
   }, [ua]);
 
@@ -29,7 +30,7 @@ const New: NextPage<Props> = ({ ua }) => {
       return router.query.date;
     }
     return "";
-  }, []);
+  }, [router.query.date]);
 
   const [targetDate, setTargetDate] = useState(
     parse(targetDateString, "yyyy-MM-dd", new Date())
@@ -63,7 +64,7 @@ const New: NextPage<Props> = ({ ua }) => {
 
         router.push(`/menus?date=${format(targetDate)}`);
       }),
-    [handleSubmit, mutate]
+    [handleSubmit, mutate, router, targetDate]
   );
 
   return (
@@ -159,7 +160,7 @@ const New: NextPage<Props> = ({ ua }) => {
                 </Button>
               </div>
               <div className="flex gap-2 justify-center">
-                <Link href={`/menus?date=${format(targetDate)}`}>
+                <Link href={`/menus?date=${format(targetDate)}`} passHref>
                   <Button type="default" htmlType="button">
                     破棄
                   </Button>

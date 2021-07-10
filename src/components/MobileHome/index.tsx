@@ -68,6 +68,7 @@ export const MobileHome = () => {
             <div className="h-2/6 flex">
               {[...Array(7).keys()].map((n) => (
                 <div
+                  key={n}
                   className={classNames("w-1/7 flex justify-center", {
                     "text-red-400": n === 0,
                     "text-blue-400": n === 6,
@@ -86,7 +87,10 @@ export const MobileHome = () => {
             ) : (
               monthlyCalendar.map((weekly) =>
                 weekly.map((date) => (
-                  <Link href={`/menus?date=${format(date)}`}>
+                  <Link
+                    key={date.toISOString()}
+                    href={`/menus?date=${format(date)}`}
+                  >
                     <div
                       className={classNames("w-1/7 flex flex-col border-b", {
                         "border-r": date.getDay() !== 6,

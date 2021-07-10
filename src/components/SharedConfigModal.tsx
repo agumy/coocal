@@ -18,8 +18,9 @@ export const SharedConfigModal = (
     }
   }, [props.visible]);
 
-  const [mode, setMode] =
-    useState<"INITIAL" | "DISPLAY" | "REGISTER">("INITIAL");
+  const [mode, setMode] = useState<"INITIAL" | "DISPLAY" | "REGISTER">(
+    "INITIAL"
+  );
 
   const inputRef = useRef<Input | null>(null);
 
@@ -58,7 +59,9 @@ export const SharedConfigModal = (
             戻る
           </Button>
         ),
-        <Button onClick={onCancel}>閉じる</Button>,
+        <Button key="footer.close" onClick={onCancel}>
+          閉じる
+        </Button>,
       ]}
       centered
       maskClosable={false}

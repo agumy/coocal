@@ -10,23 +10,24 @@ import { MenuDetail } from "./MenuDetail";
 import { useMonthlyMenus } from "../hooks/useMonthlyMenus";
 import { useMonthlyCalendar } from "../hooks/useMonthlyCalendar";
 
-const PopoverComponent = React.forwardRef(
-  ({ date, menu, calendarDate, ...props }: any, ref) => {
-    return (
-      <Popover
-        ref={ref}
-        id="popover-basic"
-        {...props}
-        style={{ ...props.style, maxWidth: "400px" }}
-        className="shadow-md bg-blue-100 w-full"
-      >
-        <Popover.Content className="h-full w-full">
-          <MenuDetail date={date} menu={menu} calendarDate={calendarDate} />
-        </Popover.Content>
-      </Popover>
-    );
-  }
-);
+const PopoverComponent = React.forwardRef(function PopoverMenuDetail(
+  { date, menu, calendarDate, ...props }: any,
+  ref
+) {
+  return (
+    <Popover
+      ref={ref}
+      id="popover-basic"
+      {...props}
+      style={{ ...props.style, maxWidth: "400px" }}
+      className="shadow-md bg-blue-100 w-full"
+    >
+      <Popover.Content className="h-full w-full">
+        <MenuDetail date={date} menu={menu} calendarDate={calendarDate} />
+      </Popover.Content>
+    </Popover>
+  );
+});
 
 export const Calendar = () => {
   const [monthCalendar, calendarDate, setDate] = useMonthlyCalendar(new Date());

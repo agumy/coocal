@@ -24,6 +24,7 @@ type Props = {
 
 const Menu: NextPage<Props> = ({ ua }) => {
   const device = useMemo(() => {
+    // eslint-disable-next-line
     return useUserAgent(global.navigator?.userAgent ?? ua);
   }, [ua]);
 

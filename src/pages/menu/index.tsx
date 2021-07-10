@@ -18,6 +18,7 @@ import { useUpdateMenu } from "../../hooks/useUpdateMenu";
 import { useDeleteMenu } from "../../hooks/useDeleteMenu";
 import { format } from "../../helper/calendar";
 import { MobileContainer } from "../../components/mobile/containers/MobileContainer";
+import { WeekNavigator } from "../../components/mobile/organisms/WeekNavigator";
 
 type Props = {
   ua: string;
@@ -127,7 +128,10 @@ const Menu: NextPage<Props> = ({ ua }) => {
             ) : (
               menu && (
                 <div className="flex flex-col h-full">
-                  <header className="h-16 border-b"></header>
+                  <WeekNavigator
+                    value={targetDate}
+                    onSelect={(date) => setTargetDate(date)}
+                  />
                   <main className="h-full w-full flex flex-col my-4 overflow-auto">
                     <form
                       className="flex flex-col gap-3 w-full h-full px-2"

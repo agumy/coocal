@@ -74,7 +74,7 @@ const New: NextPage<Props> = ({ ua }) => {
         <div></div>
       ) : (
         <MobileContainer>
-          <main className="h-full w-full flex flex-col my-4 overflow-auto">
+          <main className="h-full w-full flex flex-col overflow-auto">
             <WeekNavigator
               value={targetDate}
               onSelect={(date) => setTargetDate(date)}

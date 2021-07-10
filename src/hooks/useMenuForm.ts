@@ -13,10 +13,13 @@ type MenuFormValue = {
   url: string;
   shared: boolean;
 };
-export const useMenuForm = (menu: Menu) => {
+
+const defaultIngredient = { name: "", amount: "", hasThis: false };
+
+export const useMenuForm = (menu?: Partial<Menu>) => {
   const form = useForm<MenuFormValue>({
     defaultValues: {
-      ingredientList: [{ name: "", amount: "", hasThis: false }],
+      ingredientList: [defaultIngredient],
       url: "",
       title: "",
       shared: true,
@@ -33,9 +36,12 @@ export const useMenuForm = (menu: Menu) => {
 
   useEffect(() => {
     if (menu) {
-      form.setValue("title", menu.name);
-      form.setValue("url", menu.url);
-      form.setValue("ingredientList", menu.ingredientList);
+      form.setValue("title", menu.name ?? "");
+      form.setValue("url", menu.url ?? "");
+      form.setValue(
+        "ingredientList",
+        menu.ingredientList ?? [defaultIngredient]
+      );
     }
   }, [menu]);
 

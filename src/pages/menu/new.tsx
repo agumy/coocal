@@ -4,10 +4,6 @@ import parse from "date-fns/parse";
 import { useRouter } from "next/dist/client/router";
 import { useMemo } from "react";
 import { useMonthlyCalendar } from "../../hooks/useMonthlyCalendar";
-import isSameDay from "date-fns/isSameDay";
-import addWeeks from "date-fns/addWeeks";
-import subWeeks from "date-fns/subWeeks";
-import { useCallback } from "react";
 import { useState } from "react";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
@@ -40,22 +36,6 @@ const New: NextPage<Props> = ({ ua }) => {
   );
 
   const [calendar, , setCalendarDate] = useMonthlyCalendar(targetDate);
-
-  const nextWeek = useCallback(() => {
-    setCalendarDate((date) => addWeeks(date, 1));
-    setTargetDate((date) => addWeeks(date, 1));
-  }, []);
-
-  const prevWeek = useCallback(() => {
-    setCalendarDate((date) => subWeeks(date, 1));
-    setTargetDate((date) => subWeeks(date, 1));
-  }, []);
-
-  const weekly = useMemo(() => {
-    return calendar.find((week) =>
-      week.some((date) => isSameDay(date, targetDate))
-    );
-  }, [calendar, targetDate]);
 
   const {
     form: { register, handleSubmit },

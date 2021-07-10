@@ -1,4 +1,9 @@
-import { LeftOutlined } from "@ant-design/icons";
+import {
+  CalendarOutlined,
+  LeftOutlined,
+  SnippetsOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 
@@ -28,6 +33,20 @@ export const MobileContainer = ({
         )}
       </header>
       {children}
+      <nav className="h-16 flex sticky border-t">
+        <Link href="/">
+          <div className="border-r w-1/4 flex items-center justify-center">
+            <CalendarOutlined className="text-2xl" />
+          </div>
+        </Link>
+        <div className="border-r w-1/4 flex items-center justify-center">
+          <SnippetsOutlined className="text-2xl" />
+        </div>
+        <div className="border-r w-1/4"></div>
+        <div className="border-r w-1/4 flex items-center justify-center">
+          <UserOutlined className="text-2xl" />
+        </div>
+      </nav>
     </div>
   );
 };

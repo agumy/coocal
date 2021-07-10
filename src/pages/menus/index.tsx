@@ -78,7 +78,7 @@ const Menus: NextPage<Props> = ({ ua }) => {
                 )}
               </div>
             </main>
-            <div className="fixed bottom-0 right-0">
+            <div className="fixed bottom-12 right-0">
               <Link href={`/menu/new?date=${format(targetDate)}`}>
                 <PlusCircleFilled className="text-6xl pr-4 pb-4" />
               </Link>

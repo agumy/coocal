@@ -14,6 +14,7 @@ import { Button } from "antd";
 import { useMenuForm } from "../../components/MenuDetail/useMenuForm";
 import { useCreateMenu } from "../../hooks/useCreateMenu";
 import { format } from "../../helper/calendar";
+import { WeekNavigator } from "../../components/mobile/organisms/WeekNavigator";
 
 type Props = {
   ua: string;
@@ -92,8 +93,12 @@ const New: NextPage<Props> = ({ ua }) => {
         <div className="flex flex-col h-full">
           <header className="h-16 border-b"></header>
           <main className="h-full w-full flex flex-col my-4 overflow-auto">
+            <WeekNavigator
+              value={targetDate}
+              onSelect={(date) => setTargetDate(date)}
+            />
             <form
-              className="flex flex-col gap-3 w-full h-full px-2"
+              className="flex flex-col gap-3 w-full h-full px-2 py-3"
               onSubmit={onSubmit}
             >
               <div className="flex flex-col gap-1">

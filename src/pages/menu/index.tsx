@@ -1,19 +1,12 @@
+import { useCallback, useState, useReducer, useMemo } from "react";
 import { GetServerSideProps, NextPage } from "next";
 import { useUserAgent } from "next-useragent";
 import parse from "date-fns/parse";
 import { useRouter } from "next/dist/client/router";
-import { useMemo } from "react";
 import { useMonthlyMenus } from "../../hooks/useMonthlyMenus";
 import { Spin, Button } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { useMonthlyCalendar } from "../../hooks/useMonthlyCalendar";
-import isSameDay from "date-fns/isSameDay";
-import addWeeks from "date-fns/addWeeks";
-import subWeeks from "date-fns/subWeeks";
-import { useCallback } from "react";
-import { useState } from "react";
 import { useMenuForm } from "../../hooks/useMenuForm";
-import { useReducer } from "react";
 import { useUpdateMenu } from "../../hooks/useUpdateMenu";
 import { useDeleteMenu } from "../../hooks/useDeleteMenu";
 import { format } from "../../helper/calendar";
@@ -46,7 +39,7 @@ const Menu: NextPage<Props> = ({ ua }) => {
     return "";
   }, []);
 
-  const [targetDate, setTargetDate] = useState(
+  const [targetDate] = useState(
     parse(targetDateString, "yyyy-MM-dd", new Date())
   );
 
@@ -58,29 +51,12 @@ const Menu: NextPage<Props> = ({ ua }) => {
     }
   }, [data]);
 
-  const [calendar, , setCalendarDate] = useMonthlyCalendar(targetDate);
-
-  const nextWeek = useCallback(() => {
-    setCalendarDate((date) => addWeeks(date, 1));
-    setTargetDate((date) => addWeeks(date, 1));
-  }, []);
-
-  const prevWeek = useCallback(() => {
-    setCalendarDate((date) => subWeeks(date, 1));
-    setTargetDate((date) => subWeeks(date, 1));
-  }, []);
-
-  const weekly = useMemo(() => {
-    return calendar.find((week) =>
-      week.some((date) => isSameDay(date, targetDate))
-    );
-  }, [calendar, targetDate]);
-
   const {
-    form: { register, handleSubmit, getValues },
+    form: { register, handleSubmit, getValues, setValue },
     fieldArray: { fields, remove, append },
     importMenu,
     isLoadingImport,
+    appendRow,
   } = useMenuForm(menu!);
 
   const update = useUpdateMenu(targetDate);
@@ -145,7 +121,18 @@ const Menu: NextPage<Props> = ({ ua }) => {
                       <div className="flex flex-col gap-1">
                         <div className="flex justify-between items-end">
                           <label className="font-bold">献立名</label>
-                          <Button className="mb-1" onClick={() => toggle()}>
+                          <Button
+                            className="mb-1"
+                            onClick={() => {
+                              if (isEdit) {
+                                setValue("ingredientList", menu.ingredientList);
+                                setValue("title", menu.name);
+                                setValue("url", menu.url);
+                                setValue("shared", menu.shared);
+                              }
+                              toggle();
+                            }}
+                          >
                             {isEdit ? "中止" : "編集"}
                           </Button>
                         </div>
@@ -252,9 +239,7 @@ const Menu: NextPage<Props> = ({ ua }) => {
                               type="dashed"
                               block
                               icon={<PlusOutlined />}
-                              onClick={() =>
-                                append({ name: "", amount: "", hasThis: false })
-                              }
+                              onClick={appendRow}
                             >
                               材料を追加
                             </Button>

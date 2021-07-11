@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
+import DatePicker from "react-mobile-datepicker";
 import { useMenuForm } from "../../../hooks/useMenuForm";
 import { Menu } from "../../../models/Menu";
-import { format } from "../../../helper/calendar";
+import { format, parse } from "../../../helper/calendar";
 import { useCallback, useMemo, useReducer } from "react";
 import { useRouter } from "next/dist/client/router";
 import { useDeleteMenu } from "../../../hooks/useDeleteMenu";
@@ -19,15 +20,17 @@ export const MenuForm = ({ menu, date }: Props) => {
   const router = useRouter();
 
   const hasMenu = useMemo(() => Boolean(menu), [menu]);
+  const [isOpenDatePicker, toggleIsOpen] = useReducer((prev) => !prev, false);
   const [isEdit, toggle] = useReducer((prev) => !prev, !hasMenu);
 
+  const _menu = useMemo(() => ({ date: format(date), ...menu }), [menu, date]);
   const {
     form: { register, getValues, setValue, handleSubmit },
     fieldArray: { fields, remove },
     appendRow,
     importMenu,
     isLoadingImport,
-  } = useMenuForm(menu);
+  } = useMenuForm(_menu);
 
   const createMenu = useCreateMenu(date);
   const updateMenu = useUpdateMenu(date);
@@ -84,6 +87,7 @@ export const MenuForm = ({ menu, date }: Props) => {
                   setValue("title", menu.name);
                   setValue("url", menu.url);
                   setValue("shared", menu.shared);
+                  setValue("date", menu.date);
                 }
                 toggle();
               }}
@@ -101,6 +105,28 @@ export const MenuForm = ({ menu, date }: Props) => {
         ) : (
           <span className="py-1 text-sm">{getValues("title")}</span>
         )}
+      </div>
+      <div className="flex flex-col gap-1">
+        <label className="font-bold">日付</label>
+        <div className="flex gap-2">
+          {isEdit ? (
+            <input
+              className="border px-2 py-1 text-sm"
+              readOnly
+              type="text"
+              onClick={toggleIsOpen}
+              value={new Intl.DateTimeFormat("ja-JP", {
+                dateStyle: "long",
+              }).format(parse(getValues("date")))}
+            ></input>
+          ) : (
+            <span>
+              {new Intl.DateTimeFormat("ja-JP", { dateStyle: "long" }).format(
+                parse(getValues("date"))
+              )}
+            </span>
+          )}
+        </div>
       </div>
       <div className="flex flex-col gap-1">
         <label className="font-bold">レシピ</label>
@@ -213,6 +239,29 @@ export const MenuForm = ({ menu, date }: Props) => {
           </div>
         </>
       )}
+      <DatePicker
+        isOpen={isOpenDatePicker}
+        onSelect={(value: Date) => {
+          setValue("date", format(value));
+          toggleIsOpen();
+        }}
+        onCancel={toggleIsOpen}
+        value={parse(getValues("date"))}
+        dateConfig={{
+          year: {
+            format: "YYYY",
+            step: 1,
+          },
+          month: {
+            format: "MM",
+            step: 1,
+          },
+          date: {
+            format: "DD",
+            step: 1,
+          },
+        }}
+      />
     </form>
   );
 };

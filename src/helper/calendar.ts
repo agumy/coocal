@@ -5,6 +5,7 @@ import lastDayOfWeek from "date-fns/lastDayOfWeek";
 import startOfMonth from "date-fns/startOfMonth";
 import startOfWeek from "date-fns/startOfWeek";
 import _format from "date-fns/format";
+import _parse from "date-fns/parse";
 
 // 配列を size ごとの chunk に分割する
 const arrayChunk = <T extends any[]>([...array]: T, size = 1): T[] => {
@@ -39,3 +40,5 @@ export const generateMonthlyCalendar = (dates: Date[]) => {
 };
 
 export const format = (date: Date) => _format(date, "yyyy-MM-dd");
+
+export const parse = (date: string) => _parse(date, "yyyy-MM-dd", new Date());

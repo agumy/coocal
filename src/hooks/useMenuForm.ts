@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useMutation, useQuery } from "react-query";
+import { format } from "../helper/calendar";
 import { Menu } from "../models/Menu";
 
 type MenuFormValue = {
@@ -9,6 +10,7 @@ type MenuFormValue = {
     amount: string;
     hasThis: boolean;
   }[];
+  date: string;
   title: string;
   url: string;
   shared: boolean;
@@ -22,6 +24,7 @@ export const useMenuForm = (menu?: Partial<Menu>) => {
       ingredientList: [defaultIngredient],
       url: "",
       title: "",
+      date: format(new Date()),
       shared: true,
     },
   });
@@ -42,6 +45,7 @@ export const useMenuForm = (menu?: Partial<Menu>) => {
         "ingredientList",
         menu.ingredientList ?? [defaultIngredient]
       );
+      form.setValue("date", menu.date ?? "");
     }
   }, [menu]);
 

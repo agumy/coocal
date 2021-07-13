@@ -1,17 +1,21 @@
 import { Menu } from "../models/Menu";
 import { fetch } from "./fetch";
 
-export default {
-  get: async ({
-    startDate,
-    endDate,
-  }: {
+const MenuRepository = {
+  get: async (period?: {
     startDate: string;
     endDate: string;
   }): Promise<Menu[]> => {
+    if (period) {
+      const response = await fetch({
+        method: "GET",
+        resource: `menu?startDate=${period.startDate}&endDate=${period.endDate}`,
+      });
+      return response.data.menus;
+    }
     const response = await fetch({
       method: "GET",
-      resource: `menu?startDate=${startDate}&endDate=${endDate}`,
+      resource: `menu`,
     });
     return response.data.menus;
   },
@@ -46,3 +50,5 @@ export default {
     return response.data;
   },
 };
+
+export default MenuRepository;

@@ -24,11 +24,11 @@ const New: NextPage<Props> = ({ ua }) => {
     if (typeof router.query.date === "string") {
       return router.query.date;
     }
-    return "";
+    return null;
   }, [router.query.date]);
 
   const [targetDate, setTargetDate] = useState(
-    parse(targetDateString, "yyyy-MM-dd", new Date())
+    targetDateString ? parse(targetDateString, "yyyy-MM-dd", new Date()) : null
   );
 
   return (
@@ -38,11 +38,11 @@ const New: NextPage<Props> = ({ ua }) => {
       ) : (
         <MobileContainer
           hrefTitle="一覧"
-          href={`/menus?date=${format(targetDate)}`}
+          href={targetDate ? `/menus?date=${format(targetDate)}` : "/wishlist"}
         >
           <main className="h-full w-full flex flex-col overflow-auto">
             <WeekNavigator
-              value={targetDate}
+              value={targetDate ?? new Date()}
               onSelect={(date) => setTargetDate(date)}
             />
             <MenuForm date={targetDate} />

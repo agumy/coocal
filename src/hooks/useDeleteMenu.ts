@@ -4,22 +4,23 @@ import { createMonthlyCalendarDates, format } from "../helper/calendar";
 import { Menu } from "../models/Menu";
 import MenuRepository from "../repository/MenuRepository";
 
-export const useDeleteMenu = (date: Date) => {
+export const useDeleteMenu = (date: Date | null) => {
   const queryClient = useQueryClient();
 
-  const calendarDates = useMemo(() => createMonthlyCalendarDates(date), [date]);
-
-  const { start, end } = useMemo(
-    () => ({
-      start: format(calendarDates[0]),
-      end: format(calendarDates[calendarDates.length - 1]),
-    }),
-    [calendarDates]
-  );
+  const keys = useMemo(() => {
+    if (!date) {
+      return [];
+    }
+    const calendarDates = createMonthlyCalendarDates(date);
+    return [
+      format(calendarDates[0]),
+      format(calendarDates[calendarDates.length - 1]),
+    ];
+  }, [date]);
 
   const mutation = useMutation(MenuRepository.delete, {
     onSuccess: (data) => {
-      queryClient.setQueryData<Menu[] | undefined>([start, end], (oldData) => {
+      queryClient.setQueryData<Menu[] | undefined>(keys, (oldData) => {
         if (!oldData) {
           return;
         }

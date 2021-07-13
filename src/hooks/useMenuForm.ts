@@ -10,7 +10,7 @@ type MenuFormValue = {
     amount: string;
     hasThis: boolean;
   }[];
-  date: string;
+  date: string | null;
   title: string;
   url: string;
   shared: boolean;

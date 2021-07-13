@@ -13,7 +13,7 @@ import { useCreateMenu } from "../../../hooks/useCreateMenu";
 
 type Props = {
   menu?: Menu;
-  date: Date;
+  date: Date | null;
 };
 
 export const MenuForm = ({ menu, date }: Props) => {
@@ -23,7 +23,10 @@ export const MenuForm = ({ menu, date }: Props) => {
   const [isOpenDatePicker, toggleIsOpen] = useReducer((prev) => !prev, false);
   const [isEdit, toggle] = useReducer((prev) => !prev, !hasMenu);
 
-  const _menu = useMemo(() => ({ date: format(date), ...menu }), [menu, date]);
+  const _menu = useMemo(
+    () => ({ date: date ? format(date) : null, ...menu }),
+    [menu, date]
+  );
   const {
     form: { register, getValues, setValue, handleSubmit },
     fieldArray: { fields, remove },
@@ -39,7 +42,10 @@ export const MenuForm = ({ menu, date }: Props) => {
   const onDelete = useCallback(async () => {
     if (menu) {
       await deleteMenu.mutateAsync({ id: menu.id });
-      router.replace(`/menus?date=${format(date)}`);
+      if (date) {
+        router.replace(`/menus?date=${format(date)}`);
+      }
+      router.replace(`/wishlist`);
     }
   }, [deleteMenu, menu, date, router]);
 
@@ -63,13 +69,18 @@ export const MenuForm = ({ menu, date }: Props) => {
           ...data,
           name,
           ingredientList,
-          date: format(date),
+          date: date ? format(date) : null,
         });
 
-        router.push(`/menus?date=${format(date)}`);
+        if (date) {
+          router.push(`/menus?date=${format(date)}`);
+        }
+        router.push(`/wishlist`);
       }),
     [handleSubmit, createMenu, updateMenu, date, menu, router]
   );
+
+  const formDate = getValues("date");
   return (
     <form
       className="flex flex-col gap-3 w-full h-full px-2 py-2"
@@ -115,15 +126,21 @@ export const MenuForm = ({ menu, date }: Props) => {
               readOnly
               type="text"
               onClick={toggleIsOpen}
-              value={new Intl.DateTimeFormat("ja-JP", {
-                dateStyle: "long",
-              }).format(parse(getValues("date")))}
+              value={
+                formDate
+                  ? new Intl.DateTimeFormat("ja-JP", {
+                      dateStyle: "long",
+                    }).format(parse(formDate))
+                  : ""
+              }
             ></input>
           ) : (
             <span>
-              {new Intl.DateTimeFormat("ja-JP", { dateStyle: "long" }).format(
-                parse(getValues("date"))
-              )}
+              {formDate
+                ? new Intl.DateTimeFormat("ja-JP", {
+                    dateStyle: "long",
+                  }).format(parse(formDate))
+                : ""}
             </span>
           )}
         </div>
@@ -223,7 +240,10 @@ export const MenuForm = ({ menu, date }: Props) => {
                 削除
               </Button>
             ) : (
-              <Link href={`/menus?date=${format(date)}`} passHref>
+              <Link
+                href={date ? `/menus?date=${format(date)}` : "/wishlist"}
+                passHref
+              >
                 <Button type="default" htmlType="button">
                   破棄
                 </Button>
@@ -246,7 +266,7 @@ export const MenuForm = ({ menu, date }: Props) => {
           toggleIsOpen();
         }}
         onCancel={toggleIsOpen}
-        value={parse(getValues("date"))}
+        value={formDate ? parse(formDate) : new Date()}
         dateConfig={{
           year: {
             format: "YYYY",

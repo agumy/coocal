@@ -3,23 +3,21 @@ import { Result } from "antd";
 
 import { MobileContainer } from "../../components/mobile/containers/MobileContainer";
 import { AddMenuButton } from "../../components/mobile/organisms/AddMenuButton";
+import { useWishlist } from "../../hooks/useWishlist";
 
-const useWishList = () => {
-  return [{ id: "1" }];
-};
 const Wishlist: NextPage = () => {
-  const wishList = useWishList();
+  const { data } = useWishlist();
 
   return (
     <MobileContainer>
       <main className="h-full w-full">
-        {wishList.length ? (
-          wishList.map((e) => (
+        {data ? (
+          data.map((e) => (
             <div
               className="w-full h-16 flex flex-col justify-center items-start border-b p-3"
               key={e.id}
             >
-              <span className="font-bold">test</span>
+              <span className="font-bold">{e.name}</span>
               <span className="text-sm text-gray-400">
                 {/* author: {menu.author} */}
               </span>

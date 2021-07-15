@@ -1,20 +1,10 @@
 import Link from "next/link";
 import { PlusCircleFilled } from "@ant-design/icons";
 
-import { format } from "../../../helper/calendar";
-import { useMemo } from "react";
-
 type Props = {
-  date?: Date;
+  href: string;
 };
-export const AddMenuButton = ({ date }: Props) => {
-  const href = useMemo(() => {
-    if (date) {
-      return `/menu/new?date=${format(date)}`;
-    }
-    return "menu/new";
-  }, [date]);
-
+export const AddMenuButton = ({ href }: Props) => {
   return (
     <div className="fixed bottom-12 right-0">
       <Link href={href}>

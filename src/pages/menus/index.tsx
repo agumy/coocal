@@ -78,7 +78,7 @@ const Menus: NextPage<Props> = ({ ua }) => {
                 )}
               </div>
             </main>
-            <AddMenuButton date={targetDate} />
+            <AddMenuButton href={`/menu/new?date=${format(targetDate)}`} />
           </>
         </MobileContainer>
       )}

@@ -1,18 +1,22 @@
 import { NextPage } from "next";
 import Link from "next/link";
-import { Result } from "antd";
+import { Result, Spin } from "antd";
 
 import { MobileContainer } from "../../components/mobile/containers/MobileContainer";
 import { AddMenuButton } from "../../components/mobile/organisms/AddMenuButton";
 import { useWishlist } from "../../hooks/useWishlist";
 
 const Wishlist: NextPage = () => {
-  const { data } = useWishlist();
+  const { data, isLoading } = useWishlist();
 
   return (
     <MobileContainer>
       <main className="h-full w-full">
-        {data ? (
+        {isLoading ? (
+          <div className="w-full h-full flex justify-center items-center">
+            <Spin tip="Loading..." />
+          </div>
+        ) : data ? (
           data.map((menu) => (
             <Link key={menu.id} href={`wishlist/menu?id=${menu.id}`}>
               <div
@@ -30,7 +34,7 @@ const Wishlist: NextPage = () => {
           <Result title="献立が登録されていません" />
         )}
       </main>
-      <AddMenuButton />
+      <AddMenuButton href="/wishlist/new" />
     </MobileContainer>
   );
 };

@@ -13,7 +13,7 @@ import { useCreateMenu } from "../../../hooks/useCreateMenu";
 
 type Props = {
   menu?: Menu;
-  date: Date | null;
+  date: Date;
 };
 
 export const MenuForm = ({ menu, date }: Props) => {
@@ -23,10 +23,7 @@ export const MenuForm = ({ menu, date }: Props) => {
   const [isOpenDatePicker, toggleIsOpen] = useReducer((prev) => !prev, false);
   const [isEdit, toggle] = useReducer((prev) => !prev, !hasMenu);
 
-  const _menu = useMemo(
-    () => ({ date: date ? format(date) : null, ...menu }),
-    [menu, date]
-  );
+  const _menu = useMemo(() => ({ date: format(date), ...menu }), [menu, date]);
   const {
     form: { register, getValues, setValue, handleSubmit },
     fieldArray: { fields, remove },
@@ -69,7 +66,7 @@ export const MenuForm = ({ menu, date }: Props) => {
           ...data,
           name,
           ingredientList,
-          date: date ? format(date) : null,
+          date: format(date),
         });
 
         if (date) {
@@ -240,10 +237,7 @@ export const MenuForm = ({ menu, date }: Props) => {
                 削除
               </Button>
             ) : (
-              <Link
-                href={date ? `/menus?date=${format(date)}` : "/wishlist"}
-                passHref
-              >
+              <Link href={`/menus?date=${format(date)}`} passHref>
                 <Button type="default" htmlType="button">
                   破棄
                 </Button>

@@ -1,3 +1,4 @@
+import { Spin } from "antd";
 import {
   CalendarOutlined,
   LeftOutlined,
@@ -7,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
+import { useUserContext } from "../../../context/UserContext";
 
 type Props = {
   children: React.ReactNode;
@@ -19,6 +21,7 @@ export const MobileContainer = ({
   href = "/",
   hrefTitle = "ホーム",
 }: Props) => {
+  const { isLoading } = useUserContext();
   const router = useRouter();
 
   return (
@@ -33,7 +36,13 @@ export const MobileContainer = ({
           </Link>
         )}
       </header>
-      {children}
+      {isLoading ? (
+        <div className="h-full w-full flex justify-center items-center">
+          <Spin tip="Loading..." />
+        </div>
+      ) : (
+        children
+      )}
       <nav className="h-16 flex sticky border-t">
         <Link href="/">
           <div className="border-r w-1/4 flex items-center justify-center">

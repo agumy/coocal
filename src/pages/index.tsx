@@ -1,10 +1,12 @@
 import { NextPage, GetServerSideProps } from "next";
+import { Spin } from "antd";
 import { Calendar } from "../components/desktop/Calendar";
 import { MobileHome } from "../components/mobile/pages/Home";
 import { DesktopContainer } from "../components/desktop/DesktopContainer";
 import { useUserAgent } from "next-useragent";
 import { useMemo } from "react";
 import { MobileContainer } from "../components/mobile/containers/MobileContainer";
+import { useUserContext } from "../context/UserContext";
 
 type Props = {
   ua: string;
@@ -16,6 +18,8 @@ const Home: NextPage<Props> = ({ ua }) => {
     return useUserAgent(global.navigator?.userAgent ?? ua);
   }, [ua]);
 
+  const { isLoading } = useUserContext();
+
   return (
     <>
       {!device.isMobile ? (
@@ -24,6 +28,10 @@ const Home: NextPage<Props> = ({ ua }) => {
             <Calendar />
           </div>
         </DesktopContainer>
+      ) : isLoading ? (
+        <div className="flex items-center justify-center h-full w-full">
+          <Spin tip="Loading..." />
+        </div>
       ) : (
         <MobileContainer>
           <MobileHome />

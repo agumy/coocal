@@ -9,7 +9,8 @@ interface Props {
 
 export const UserContext = React.createContext<{
   user: firebase.User | null;
-}>({ user: null });
+  isLoading: boolean;
+}>({ user: null, isLoading: false });
 
 export const useUserContext = () => {
   const context = useContext(UserContext);
@@ -19,12 +20,14 @@ export const useUserContext = () => {
 
 export const UserContextProvider: React.VFC<Props> = ({ children }) => {
   const [user, setUser] = useState<firebase.User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
 
   useEffect(() => {
     auth.onAuthStateChanged(async (user) => {
       setUser(user);
+      setIsLoading(false);
 
       if (user && !user.emailVerified) {
         router.push("/sign-up/verify");
@@ -33,6 +36,8 @@ export const UserContextProvider: React.VFC<Props> = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user }}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ user, isLoading }}>
+      {children}
+    </UserContext.Provider>
   );
 };

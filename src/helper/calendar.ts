@@ -20,17 +20,26 @@ export const generateDateFromYM = (year: number, month: number) => {};
 
 // date を含む月次カレンダーの日付の配列を作る
 export const createMonthlyCalendarDates = (date: Date) => {
+  const { startDate, endDate } = getCalendarPeriod(date);
+  const diff = differenceInDays(endDate, startDate);
+
+  const calendar = [...Array(diff + 1).keys()].map((n) =>
+    addDays(startDate, n)
+  );
+
+  return calendar;
+};
+
+export const getCalendarPeriod = (date: Date) => {
   const first = startOfMonth(date);
   const last = lastDayOfMonth(date);
   const startDateOfWeek = startOfWeek(first);
   const lastDateOfWeek = lastDayOfWeek(last);
-  const diff = differenceInDays(lastDateOfWeek, startDateOfWeek);
 
-  const calendar = [...Array(diff + 1).keys()].map((n) =>
-    addDays(startDateOfWeek, n)
-  );
-
-  return calendar;
+  return {
+    startDate: startDateOfWeek,
+    endDate: lastDateOfWeek,
+  };
 };
 
 // 配列を７日ごとに分割して二次元配列して返す

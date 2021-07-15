@@ -2,19 +2,19 @@ import { useMemo } from "react";
 import { useQuery } from "react-query";
 import { useUserContext } from "../context/UserContext";
 import MenuRepository from "../repository/MenuRepository";
-import { createMonthlyCalendarDates, format } from "../helper/calendar";
+import { getCalendarPeriod, format } from "../helper/calendar";
 
 export const useMonthlyMenus = (date: Date) => {
   const { user } = useUserContext();
 
-  const calendarDates = createMonthlyCalendarDates(date);
+  const period = getCalendarPeriod(date);
 
   const { startDate, endDate } = useMemo(
     () => ({
-      startDate: format(calendarDates[0]),
-      endDate: format(calendarDates[calendarDates.length - 1]),
+      startDate: format(period.startDate),
+      endDate: format(period.endDate),
     }),
-    [calendarDates]
+    [period]
   );
 
   const query = useQuery(

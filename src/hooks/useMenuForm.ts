@@ -70,7 +70,9 @@ export const useMenuForm = (menu?: Partial<Menu>) => {
       onSuccess: (data) => {
         if (data) {
           isFetched.current = true;
-          fieldArray.append(data.ingredientList);
+          fieldArray.append(
+            data.ingredientList.map((e: any) => ({ ...e, hasThis: false }))
+          );
           form.setValue("title", data.title);
         }
       },

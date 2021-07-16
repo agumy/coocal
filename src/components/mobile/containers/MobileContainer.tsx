@@ -49,9 +49,11 @@ export const MobileContainer = ({
             <CalendarOutlined className="text-2xl" />
           </div>
         </Link>
-        <div className="border-r w-1/4 flex items-center justify-center">
-          <UnorderedListOutlined className="text-2xl" />
-        </div>
+        <Link href="/cart">
+          <div className="border-r w-1/4 flex items-center justify-center">
+            <UnorderedListOutlined className="text-2xl" />
+          </div>
+        </Link>
         <Link href="/wishlist">
           <div className="border-r w-1/4 flex items-center justify-center">
             <SnippetsOutlined className="text-2xl" />

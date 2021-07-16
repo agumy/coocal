@@ -3,11 +3,10 @@ import { GetServerSideProps, NextPage } from "next";
 import { useUserAgent } from "next-useragent";
 import { useRouter } from "next/dist/client/router";
 import { Spin } from "antd";
-import { useUpdateMenu } from "../../hooks/useUpdateMenu";
 import { format } from "../../helper/calendar";
 import { MobileContainer } from "../../components/mobile/containers/MobileContainer";
 import { WeekNavigator } from "../../components/mobile/organisms/WeekNavigator";
-import { MenuForm } from "../../components/mobile/organisms/MenuForm";
+import { WishMenuForm } from "../../components/mobile/organisms/WishMenuForm";
 import { useWishlist } from "../../hooks/useWishlist";
 
 type Props = {
@@ -57,7 +56,7 @@ const Menu: NextPage<Props> = ({ ua }) => {
                     }}
                   />
                   <main className="h-full w-full flex flex-col overflow-auto">
-                    <MenuForm menu={menu} date={null} />
+                    <WishMenuForm menu={menu} />
                   </main>
                 </div>
               )

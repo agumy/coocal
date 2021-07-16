@@ -49,12 +49,6 @@ const Menu: NextPage<Props> = ({ ua }) => {
             ) : (
               menu && (
                 <div className="flex flex-col h-full">
-                  <WeekNavigator
-                    value={new Date()}
-                    onSelect={(date) => {
-                      router.push(`/menus?date=${format(date)}`);
-                    }}
-                  />
                   <main className="h-full w-full flex flex-col overflow-auto">
                     <WishMenuForm menu={menu} />
                   </main>

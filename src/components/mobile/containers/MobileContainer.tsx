@@ -29,7 +29,7 @@ export const MobileContainer = ({
       <header className="h-16 border-b flex">
         {router.pathname !== "/" && (
           <Link href={href}>
-            <div className="flex items-center text-blue-600 gap-1">
+            <div className="flex items-center text-blue-600 gap-1 px-1">
               <LeftOutlined className="text-xl pl-2" />
               <span>{hrefTitle}</span>
             </div>

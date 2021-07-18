@@ -22,13 +22,26 @@ const Menus: NextPage<Props> = ({ ua }) => {
     return useUserAgent(global.navigator?.userAgent ?? ua);
   }, [ua]);
 
+  const [days, setDays] = useState(3);
   return (
     <>
       {!device.isMobile ? (
         <div></div>
       ) : (
         <MobileContainer>
-          <main className="h-full w-full flex flex-col"></main>
+          <main className="h-full w-full flex flex-col">
+            <div className="flex flex-col h-full w-full gap-3 py-3 px-2">
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  value={days}
+                  className="border-gray-400 border py-1 px-2 text-right w-16"
+                />
+                <span className="text-lg">日分</span>
+              </div>
+              <div className="gap-4"></div>
+            </div>
+          </main>
         </MobileContainer>
       )}
     </>

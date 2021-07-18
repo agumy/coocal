@@ -1,16 +1,15 @@
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { GetServerSideProps, NextPage } from "next";
-import Link from "next/link";
 import { useUserAgent } from "next-useragent";
-import parse from "date-fns/parse";
-import { useRouter } from "next/dist/client/router";
-import { Spin, Result } from "antd";
 
-import { WeekNavigator } from "../../components/mobile/organisms/WeekNavigator";
-import { format } from "../../helper/calendar";
-import { useMonthlyMenus } from "../../hooks/useMonthlyMenus";
 import { MobileContainer } from "../../components/mobile/containers/MobileContainer";
-import { AddMenuButton } from "../../components/mobile/organisms/AddMenuButton";
+import { useQuery } from "react-query";
+import MenuRepository from "../../repository/MenuRepository";
+import { format } from "../../helper/calendar";
+import { addDays } from "date-fns";
+import { useEffect } from "react";
+import { groupBy } from "lodash";
+import { Spin } from "antd";
 
 type Props = {
   ua: string;
@@ -23,6 +22,30 @@ const Menus: NextPage<Props> = ({ ua }) => {
   }, [ua]);
 
   const [days, setDays] = useState(3);
+
+  const { data, isLoading, refetch } = useQuery(
+    [format(new Date()), format(addDays(new Date(), days))],
+    () =>
+      MenuRepository.get({
+        startDate: format(new Date()),
+        endDate: format(addDays(new Date(), days)),
+      }),
+    {
+      enabled: false,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  const menus = useMemo(() => {
+    const dic = groupBy(data ?? [], (menu) => menu.date);
+    return dic;
+  }, [data]);
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
   return (
     <>
       {!device.isMobile ? (
@@ -39,7 +62,40 @@ const Menus: NextPage<Props> = ({ ua }) => {
                 />
                 <span className="text-lg">日分</span>
               </div>
-              <div className="gap-4"></div>
+              <div className="gap-4">
+                {isLoading ? (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Spin tip="Loading..." />
+                  </div>
+                ) : (
+                  Object.keys(menus).map((date) => (
+                    <div key={date} className="rounded flex flex-col gap-2">
+                      <span className="text-sm text-black">{date}</span>
+                      {menus[date].map((menu) => (
+                        <div
+                          key={menu.id}
+                          className="flex flex-col p-2 gap-1 border border-gray-400 rounded"
+                        >
+                          <span className="text-lg text-black font-bold">
+                            {menu.name}
+                          </span>
+                          <ul className="flex flex-col gap-1 pl-5 pr-1 text-xs mb-0">
+                            {menu.ingredientList.map((ingredient, i) => (
+                              <li
+                                key={i}
+                                className="flex justify-between items-center"
+                              >
+                                <span>{ingredient.name}</span>
+                                <span>{ingredient.amount}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </main>
         </MobileContainer>

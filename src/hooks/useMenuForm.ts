@@ -51,16 +51,6 @@ export const useMenuForm = (menu?: Partial<Menu>) => {
 
   const isFetched = useRef(false);
 
-  useEffect(() => {
-    if (isFetched.current) {
-      isFetched.current = false;
-      const willRemove = fieldArray.fields
-        .map((f, i) => (!(f.name || f.amount) ? i : null))
-        .filter((f) => typeof f === "number") as number[];
-      fieldArray.remove(willRemove);
-    }
-  }, [fieldArray]);
-
   const { mutate: importMenu, isLoading: isLoadingImport } = useMutation(
     () =>
       fetch(
@@ -70,9 +60,7 @@ export const useMenuForm = (menu?: Partial<Menu>) => {
       onSuccess: (data) => {
         if (data) {
           isFetched.current = true;
-          fieldArray.append(
-            data.ingredientList.map((e: any) => ({ ...e, hasThis: false }))
-          );
+          form.setValue("ingredientList", data.ingredientList);
           form.setValue("title", data.title);
         }
       },

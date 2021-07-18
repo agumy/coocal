@@ -39,10 +39,7 @@ export const MenuForm = ({ menu, date }: Props) => {
   const onDelete = useCallback(async () => {
     if (menu) {
       await deleteMenu.mutateAsync({ id: menu.id });
-      if (date) {
-        router.replace(`/menus?date=${format(date)}`);
-      }
-      router.replace(`/wishlist`);
+      router.replace(`/menus?date=${format(date)}`);
     }
   }, [deleteMenu, menu, date, router]);
 
@@ -69,10 +66,7 @@ export const MenuForm = ({ menu, date }: Props) => {
           date: format(date),
         });
 
-        if (date) {
-          router.push(`/menus?date=${format(date)}`);
-        }
-        router.push(`/wishlist`);
+        router.push(`/menus?date=${format(date)}`);
       }),
     [handleSubmit, createMenu, updateMenu, date, menu, router]
   );

@@ -74,29 +74,31 @@ const Menus: NextPage<Props> = ({ ua }) => {
                   </div>
                 ) : (
                   Object.keys(menus).map((date) => (
-                    <div key={date} className="rounded flex flex-col gap-2">
+                    <div key={date} className="rounded flex flex-col gap-1">
                       <span className="text-sm text-black">{date}</span>
-                      {menus[date].map((menu) => (
-                        <div
-                          key={menu.id}
-                          className="flex flex-col p-2 gap-1 border border-gray-400 rounded shadow-md"
-                        >
-                          <span className="text-lg text-black font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
-                            {menu.name}
-                          </span>
-                          <ul className="flex flex-col gap-1 pl-5 pr-1 text-xs mb-0">
-                            {menu.ingredientList.map((ingredient, i) => (
-                              <li
-                                key={i}
-                                className="flex justify-between items-center"
-                              >
-                                <span>{ingredient.name}</span>
-                                <span>{ingredient.amount}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
+                      <div className="flex flex-col gap-2">
+                        {menus[date].map((menu) => (
+                          <div
+                            key={menu.id}
+                            className="flex flex-col p-2 gap-1 border border-gray-400 rounded shadow-md"
+                          >
+                            <span className="text-lg text-black font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
+                              {menu.name}
+                            </span>
+                            <ul className="flex flex-col gap-1 pl-5 pr-1 text-xs mb-0">
+                              {menu.ingredientList.map((ingredient, i) => (
+                                <li
+                                  key={i}
+                                  className="flex justify-between items-center"
+                                >
+                                  <span>{ingredient.name}</span>
+                                  <span>{ingredient.amount}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   ))
                 )}

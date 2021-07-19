@@ -76,7 +76,7 @@ const Menus: NextPage<Props> = ({ ua }) => {
                           key={menu.id}
                           className="flex flex-col p-2 gap-1 border border-gray-400 rounded"
                         >
-                          <span className="text-lg text-black font-bold">
+                          <span className="text-lg text-black font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
                             {menu.name}
                           </span>
                           <ul className="flex flex-col gap-1 pl-5 pr-1 text-xs mb-0">

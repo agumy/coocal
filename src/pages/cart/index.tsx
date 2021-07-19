@@ -1,15 +1,15 @@
 import React, { useMemo, useState } from "react";
 import { GetServerSideProps, NextPage } from "next";
 import { useUserAgent } from "next-useragent";
+import { addDays } from "date-fns";
+import { useEffect } from "react";
+import { groupBy } from "lodash";
+import { Spin } from "antd";
 
 import { MobileContainer } from "../../components/mobile/containers/MobileContainer";
 import { useQuery } from "react-query";
 import MenuRepository from "../../repository/MenuRepository";
 import { format } from "../../helper/calendar";
-import { addDays } from "date-fns";
-import { useEffect } from "react";
-import { groupBy } from "lodash";
-import { Spin } from "antd";
 
 type Props = {
   ua: string;
@@ -52,7 +52,7 @@ const Menus: NextPage<Props> = ({ ua }) => {
         <div></div>
       ) : (
         <MobileContainer>
-          <main className="h-full w-full flex flex-col">
+          <main className="h-full w-full flex flex-col overflow-y-auto">
             <div className="flex flex-col h-full w-full gap-3 py-3 px-2">
               <div className="flex items-center gap-2">
                 <input
@@ -62,7 +62,7 @@ const Menus: NextPage<Props> = ({ ua }) => {
                 />
                 <span className="text-lg">日分</span>
               </div>
-              <div className="gap-4">
+              <div className="flex flex-col gap-4">
                 {isLoading ? (
                   <div className="w-full h-full flex items-center justify-center">
                     <Spin tip="Loading..." />

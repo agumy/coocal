@@ -62,7 +62,7 @@ const Menus: NextPage<Props> = ({ ua }) => {
                 />
                 <span className="text-lg">日分</span>
               </div>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
                 {isLoading ? (
                   <div className="w-full h-full flex items-center justify-center">
                     <Spin tip="Loading..." />

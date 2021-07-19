@@ -71,7 +71,7 @@ const Menu: NextPage<Props> = ({ ua }) => {
                       router.push(`/menus?date=${format(date)}`);
                     }}
                   />
-                  <main className="h-full w-full flex flex-col overflow-auto">
+                  <main className="w-full flex flex-col overflow-auto">
                     <MenuForm menu={menu} date={targetDate} />
                   </main>
                 </div>

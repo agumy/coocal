@@ -20,7 +20,7 @@ const New: NextPage<Props> = ({ ua }) => {
         <div></div>
       ) : (
         <MobileContainer hrefTitle="一覧" href="/wishlist">
-          <main className="h-full w-full flex flex-col overflow-auto">
+          <main className="w-full flex flex-col overflow-auto">
             <WishMenuForm />
           </main>
         </MobileContainer>

@@ -56,8 +56,8 @@ const Menus: NextPage<Props> = ({ ua }) => {
         <div></div>
       ) : (
         <MobileContainer>
-          <main className="h-full w-full flex flex-col overflow-y-auto">
-            <div className="flex flex-col h-full w-full gap-3 py-3 px-2">
+          <main className="w-full flex flex-col overflow-y-auto">
+            <div className="flex flex-col w-full gap-3 py-3 px-2">
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -79,7 +79,7 @@ const Menus: NextPage<Props> = ({ ua }) => {
                       {menus[date].map((menu) => (
                         <div
                           key={menu.id}
-                          className="flex flex-col p-2 gap-1 border border-gray-400 rounded"
+                          className="flex flex-col p-2 gap-1 border border-gray-400 rounded shadow-md"
                         >
                           <span className="text-lg text-black font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
                             {menu.name}

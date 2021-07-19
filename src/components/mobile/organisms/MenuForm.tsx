@@ -73,10 +73,7 @@ export const MenuForm = ({ menu, date }: Props) => {
 
   const formDate = getValues("date");
   return (
-    <form
-      className="flex flex-col gap-3 w-full h-full px-2 py-2"
-      onSubmit={submit}
-    >
+    <form className="flex flex-col gap-3 w-full px-2 py-2" onSubmit={submit}>
       <div className="flex flex-col gap-1">
         <div className="flex justify-between items-end">
           <label className="font-bold">献立名</label>

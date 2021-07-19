@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { SyntheticEvent, useCallback, useMemo, useState } from "react";
 import { GetServerSideProps, NextPage } from "next";
 import { useUserAgent } from "next-useragent";
 import { addDays } from "date-fns";
@@ -23,12 +23,16 @@ const Menus: NextPage<Props> = ({ ua }) => {
 
   const [days, setDays] = useState(3);
 
+  const blur = useCallback((e: SyntheticEvent<HTMLInputElement>) => {
+    setDays(Number(e.currentTarget.value));
+  }, []);
+
   const { data, isLoading, refetch } = useQuery(
-    [format(new Date()), format(addDays(new Date(), days))],
+    [format(new Date()), format(addDays(new Date(), days - 1))],
     () =>
       MenuRepository.get({
         startDate: format(new Date()),
-        endDate: format(addDays(new Date(), days)),
+        endDate: format(addDays(new Date(), days - 1)),
       }),
     {
       enabled: false,
@@ -44,7 +48,7 @@ const Menus: NextPage<Props> = ({ ua }) => {
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [days]);
 
   return (
     <>
@@ -57,7 +61,8 @@ const Menus: NextPage<Props> = ({ ua }) => {
               <div className="flex items-center gap-2">
                 <input
                   type="number"
-                  value={days}
+                  defaultValue={days}
+                  onBlur={blur}
                   className="border-gray-400 border py-1 px-2 text-right w-16"
                 />
                 <span className="text-lg">日分</span>

@@ -24,11 +24,11 @@ const New: NextPage<Props> = ({ ua }) => {
     if (typeof router.query.date === "string") {
       return router.query.date;
     }
-    return null;
+    return format(new Date());
   }, [router.query.date]);
 
   const [targetDate, setTargetDate] = useState(
-    targetDateString ? parse(targetDateString, "yyyy-MM-dd", new Date()) : null
+    parse(targetDateString, "yyyy-MM-dd", new Date())
   );
 
   return (

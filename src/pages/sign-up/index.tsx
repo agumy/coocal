@@ -1,11 +1,25 @@
 import { NextPage } from "next";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useUserAgent } from "next-useragent";
 import { useForm } from "react-hook-form";
 import { auth } from "../../firebase";
 import Spinner from "react-bootstrap/Spinner";
 import { DesktopContainer } from "../../components/desktop/DesktopContainer";
+import { Spin } from "antd";
+import { MobileContainer } from "../../components/mobile/containers/MobileContainer";
+import { useUserContext } from "../../context/UserContext";
 
-const Register: NextPage = () => {
+type Props = {
+  ua: string;
+};
+const Register: NextPage<Props> = ({ ua }) => {
+  const device = useMemo(() => {
+    // eslint-disable-next-line
+    return useUserAgent(global.navigator?.userAgent ?? ua);
+  }, [ua]);
+
+  const { isLoading: isLoadingUser } = useUserContext();
+
   const {
     register,
     handleSubmit,
@@ -39,7 +53,7 @@ const Register: NextPage = () => {
     }
   });
 
-  return (
+  return !device.isMobile ? (
     <DesktopContainer>
       <div className="w-full h-full flex flex-col items-center justify-center">
         <form
@@ -98,6 +112,14 @@ const Register: NextPage = () => {
         </form>
       </div>
     </DesktopContainer>
+  ) : isLoadingUser ? (
+    <div className="flex items-center justify-center h-full w-full">
+      <Spin tip="Loading..." />
+    </div>
+  ) : (
+    <MobileContainer>
+      <div className="h-full w-full">TEST</div>
+    </MobileContainer>
   );
 };
 

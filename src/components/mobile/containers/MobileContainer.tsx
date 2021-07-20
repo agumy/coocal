@@ -21,7 +21,7 @@ export const MobileContainer = ({
   href = "/",
   hrefTitle = "ホーム",
 }: Props) => {
-  const { isLoading } = useUserContext();
+  const { user, isLoading } = useUserContext();
   const router = useRouter();
 
   return (
@@ -40,8 +40,10 @@ export const MobileContainer = ({
         <div className="h-full w-full flex justify-center items-center">
           <Spin tip="Loading..." />
         </div>
-      ) : (
+      ) : user ? (
         children
+      ) : (
+        <div className="h-full w-full">こんにちは</div>
       )}
       <nav className="h-16 flex sticky border-t">
         <Link href="/">

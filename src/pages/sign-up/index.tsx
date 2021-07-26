@@ -2,12 +2,11 @@ import { NextPage } from "next";
 import { useMemo, useState } from "react";
 import { useUserAgent } from "next-useragent";
 import { useForm } from "react-hook-form";
-import { auth } from "../../firebase";
-import Spinner from "react-bootstrap/Spinner";
 import { DesktopContainer } from "../../components/desktop/DesktopContainer";
-import { Spin } from "antd";
+import { Button, Spin } from "antd";
 import { MobileContainer } from "../../components/mobile/containers/MobileContainer";
 import { useUserContext } from "../../context/UserContext";
+import { useCreateUser } from "../../hooks/useCreateUser";
 
 type Props = {
   ua: string;
@@ -28,29 +27,10 @@ const Register: NextPage<Props> = ({ ua }) => {
     reValidateMode: "onBlur",
   });
 
-  const [isLoading, setLoading] = useState(false);
+  const userMutation = useCreateUser();
 
   const signUp = handleSubmit(async (data) => {
-    if (data.email && data.password) {
-      setLoading(true);
-      try {
-        const result = await auth.createUserWithEmailAndPassword(
-          data.email,
-          data.password
-        );
-        if (result.user) {
-          const ACTION_CODE_SETTINGS = {
-            url: `${window.location.origin}/sign-up/verified`,
-            handleCodeInApp: true,
-          };
-          await result.user.sendEmailVerification(ACTION_CODE_SETTINGS);
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    }
+    userMutation.mutate(data);
   });
 
   return !device.isMobile ? (
@@ -93,21 +73,13 @@ const Register: NextPage<Props> = ({ ua }) => {
           </label>
 
           <div className="mt-2 flex justify-end">
-            <button type="submit" className="py-1 px-3 border rounded bg-white">
-              {isLoading ? (
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                </>
-              ) : (
-                "新規登録"
-              )}
-            </button>
+            <Button
+              htmlType="submit"
+              className="py-1 px-3 border rounded bg-white"
+              loading={userMutation.isLoading}
+            >
+              新規登録
+            </Button>
           </div>
         </form>
       </div>

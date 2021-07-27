@@ -6,9 +6,9 @@ import { BsFillPlusCircleFill } from "react-icons/bs";
 import format from "date-fns/format";
 import setDay from "date-fns/setDay";
 
-import { MenuDetail } from "./MenuDetail";
-import { useMonthlyMenus } from "../../hooks/useMonthlyMenus";
-import { useMonthlyCalendar } from "../../hooks/useMonthlyCalendar";
+import { MenuDetail } from "../MenuDetail";
+import { useMonthlyMenus } from "../../../hooks/useMonthlyMenus";
+import { useMonthlyCalendar } from "../../../hooks/useMonthlyCalendar";
 
 const PopoverComponent = React.forwardRef(function PopoverMenuDetail(
   { date, menu, calendarDate, ...props }: any,

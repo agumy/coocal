@@ -7,7 +7,7 @@ import { useUserContext } from "../../context/UserContext";
 import { useRouter } from "next/dist/client/router";
 import UserRepository from "../../repository/UserRepository";
 import { Button } from "antd";
-import { DesktopContainer } from "../../components/desktop/DesktopContainer";
+import { DesktopContainer } from "../../components/desktop/containers/DesktopContainer";
 
 const Register: NextPage = () => {
   const { user } = useUserContext();

@@ -1,4 +1,4 @@
-import { DesktopContainer } from "../DesktopContainer";
+import { DesktopContainer } from "../containers/DesktopContainer";
 import { Calendar } from "../orgnisms/Calendar";
 export const Home = () => {
   return (

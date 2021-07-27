@@ -1,4 +1,4 @@
-import { DesktopContainer } from "../DesktopContainer";
+import { DesktopContainer } from "../containers/DesktopContainer";
 import { RegistrationForm } from "../orgnisms/RegistrationForm";
 
 export const SignUp = () => {

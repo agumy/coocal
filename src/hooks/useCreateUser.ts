@@ -1,11 +1,6 @@
 import { useMutation } from "react-query";
 import { auth } from "../firebase";
 
-const ACTION_CODE_SETTINGS = {
-  url: `${window.location.origin}/sign-up/verified`,
-  handleCodeInApp: true,
-};
-
 export const useCreateUser = () => {
   const mutation = useMutation(
     async ({ password, email }: { email: string; password: string }) => {
@@ -14,6 +9,10 @@ export const useCreateUser = () => {
     {
       onSuccess: async ({ user }) => {
         if (user) {
+          const ACTION_CODE_SETTINGS = {
+            url: `${window.location.origin}/sign-up/verified`,
+            handleCodeInApp: true,
+          };
           await user.sendEmailVerification(ACTION_CODE_SETTINGS);
         }
       },

@@ -2,7 +2,7 @@ import jsdom from "jsdom";
 import fetch from "node-fetch";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const ingredients = async (req: NextApiRequest, res: NextApiResponse) => {
   const { url } = req.query;
 
   try {
@@ -40,3 +40,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(500).json(error);
   }
 };
+
+export default ingredients;

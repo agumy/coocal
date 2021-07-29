@@ -17,6 +17,13 @@ const ingredients = async (req: NextApiRequest, res: NextApiResponse) => {
         ?.textContent?.replace("レシピ・作り方", "")
         .trim();
 
+      const serving = document
+        .querySelector("span.servings")
+        ?.textContent?.replace(/[^0-9]/g, "")
+        .trim();
+
+      const servingNumber = Number(serving);
+
       const ingredientList = Array.from(
         document.querySelector(".ingredient-list")?.children || []
       ).filter((ingredient) => !ingredient.classList.contains("group-title"));
@@ -30,7 +37,8 @@ const ingredients = async (req: NextApiRequest, res: NextApiResponse) => {
       });
 
       const result = {
-        title,
+        title: title ?? "",
+        serving: Number.isNaN(servingNumber) ? 0 : servingNumber,
         ingredientList: jsonIngredientList,
       };
 

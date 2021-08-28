@@ -56,7 +56,7 @@ const Menus: NextPage<Props> = ({ ua }) => {
         <div></div>
       ) : (
         <MobileContainer>
-          <main className="w-full flex flex-col overflow-y-auto">
+          <main className="w-full flex flex-col overflow-y-auto h-full">
             <div className="flex flex-col w-full gap-3 py-3 px-2">
               <div className="flex items-center gap-2">
                 <input

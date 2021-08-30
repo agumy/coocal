@@ -43,7 +43,7 @@ export const MobileContainer = ({
       ) : user ? (
         children
       ) : (
-        <div className="h-full w-full">こんにちは</div>
+        <div className="h-full w-full">ログインしていません</div>
       )}
       <nav className="h-16 flex sticky border-t">
         <Link href="/">

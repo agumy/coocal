@@ -2,6 +2,8 @@ import { Spin } from "antd";
 import {
   CalendarOutlined,
   LeftOutlined,
+  LoginOutlined,
+  LogoutOutlined,
   SnippetsOutlined,
   UnorderedListOutlined,
   UserOutlined,
@@ -26,15 +28,24 @@ export const MobileContainer = ({
 
   return (
     <div className="flex flex-col h-full">
-      <header className="h-16 border-b flex">
-        {router.pathname !== "/" && (
-          <Link href={href}>
-            <div className="flex items-center text-blue-600 gap-1 px-1">
-              <LeftOutlined className="text-xl pl-2" />
-              <span>{hrefTitle}</span>
-            </div>
-          </Link>
-        )}
+      <header className="h-16 border-b flex justify-between">
+        <div>
+          {router.pathname !== "/" && (
+            <Link href={href}>
+              <div className="flex items-center text-blue-600 gap-1 px-1">
+                <LeftOutlined className="text-xl pl-2" />
+                <span>{hrefTitle}</span>
+              </div>
+            </Link>
+          )}
+        </div>
+        <div className="flex items-center justify-center mr-3">
+          {user ? (
+            <LogoutOutlined className="text-2xl" />
+          ) : (
+            <LoginOutlined className="text-2xl" />
+          )}
+        </div>
       </header>
       {isLoading ? (
         <div className="h-full w-full flex justify-center items-center">

@@ -28,7 +28,7 @@ export const MobileContainer = ({
 
   return (
     <div className="flex flex-col h-full">
-      <header className="h-16 border-b flex justify-between">
+      <header className="h-16 border-b flex justify-between items-center">
         <div>
           {router.pathname !== "/" && (
             <Link href={href}>
@@ -43,7 +43,9 @@ export const MobileContainer = ({
           {user ? (
             <LogoutOutlined className="text-2xl" />
           ) : (
-            <LoginOutlined className="text-2xl" />
+            <Link href="/sign-in">
+              <LoginOutlined className="text-2xl" />
+            </Link>
           )}
         </div>
       </header>
@@ -51,7 +53,7 @@ export const MobileContainer = ({
         <div className="h-full w-full flex justify-center items-center">
           <Spin tip="Loading..." />
         </div>
-      ) : user ? (
+      ) : user || router.pathname === "/sign-in" ? (
         children
       ) : (
         <div className="h-full w-full">ログインしていません</div>

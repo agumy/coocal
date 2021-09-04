@@ -41,7 +41,9 @@ export const MobileContainer = ({
         </div>
         <div className="flex items-center justify-center mr-3">
           {user ? (
-            <LogoutOutlined className="text-2xl" />
+            <Link href="/sign-out">
+              <LogoutOutlined className="text-2xl" />
+            </Link>
           ) : (
             <Link href="/sign-in">
               <LoginOutlined className="text-2xl" />

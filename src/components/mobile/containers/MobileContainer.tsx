@@ -23,7 +23,7 @@ export const MobileContainer = ({
   href = "/",
   hrefTitle = "ホーム",
 }: Props) => {
-  const { user, isLoading } = useUserContext();
+  const { user, isLoading, signOut } = useUserContext();
   const router = useRouter();
 
   return (
@@ -41,9 +41,9 @@ export const MobileContainer = ({
         </div>
         <div className="flex items-center justify-center mr-3">
           {user ? (
-            <Link href="/sign-out">
+            <button onClick={signOut}>
               <LogoutOutlined className="text-2xl" />
-            </Link>
+            </button>
           ) : (
             <Link href="/sign-in">
               <LoginOutlined className="text-2xl" />

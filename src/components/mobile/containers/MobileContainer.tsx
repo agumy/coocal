@@ -39,17 +39,19 @@ export const MobileContainer = ({
             </Link>
           )}
         </div>
-        <div className="flex items-center justify-center mr-3">
-          {user ? (
-            <button onClick={signOut}>
-              <LogoutOutlined className="text-2xl" />
-            </button>
-          ) : (
-            <Link href="/sign-in">
-              <LoginOutlined className="text-2xl" />
-            </Link>
-          )}
-        </div>
+        {!isLoading && (
+          <div className="flex items-center justify-center mr-3">
+            {user ? (
+              <button onClick={signOut}>
+                <LogoutOutlined className="text-2xl" />
+              </button>
+            ) : (
+              <Link href="/sign-in">
+                <LoginOutlined className="text-2xl" />
+              </Link>
+            )}
+          </div>
+        )}
       </header>
       {isLoading ? (
         <div className="h-full w-full flex justify-center items-center">

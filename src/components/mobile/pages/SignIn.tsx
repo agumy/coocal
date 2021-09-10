@@ -50,7 +50,12 @@ export const SignIn = () => {
             required: "パスワードを入力してください。",
           })}
         />
-        <Button className="w-56 rounded" type="primary" htmlType="submit">
+        <Button
+          className="w-56 rounded"
+          type="primary"
+          htmlType="submit"
+          loading={signIn.isLoading}
+        >
           ログイン
         </Button>
       </form>

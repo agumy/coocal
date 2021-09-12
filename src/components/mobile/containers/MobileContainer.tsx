@@ -1,4 +1,4 @@
-import { Spin } from "antd";
+import { Button, Spin } from "antd";
 import {
   CalendarOutlined,
   LeftOutlined,
@@ -60,7 +60,12 @@ export const MobileContainer = ({
       ) : user || router.pathname === "/sign-in" ? (
         children
       ) : (
-        <div className="h-full w-full">ログインしていません</div>
+        <div className="h-full w-full flex flex-col items-center pt-5">
+          <Link href="/sign-in">
+            <Button className="w-56 rounded mb-4">ログイン</Button>
+          </Link>
+          <Button className="w-56 rounded">新規登録</Button>
+        </div>
       )}
       <nav className="h-16 flex sticky border-t">
         <Link href="/">

@@ -11,6 +11,7 @@ import {
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 import { useUserContext } from "../../../context/UserContext";
+import { LoginForm } from "../organisms/LoginForm";
 
 type Props = {
   children: React.ReactNode;
@@ -60,10 +61,10 @@ export const MobileContainer = ({
       ) : user || router.pathname === "/sign-in" ? (
         children
       ) : (
-        <div className="h-full w-full flex flex-col items-center pt-5">
-          <Link href="/sign-in">
-            <Button className="w-56 rounded mb-4">ログイン</Button>
-          </Link>
+        <div className="h-full w-full flex flex-col items-center justify-start pt-5">
+          <div className="mb-4">
+            <LoginForm />
+          </div>
           <Button className="w-56 rounded">新規登録</Button>
         </div>
       )}

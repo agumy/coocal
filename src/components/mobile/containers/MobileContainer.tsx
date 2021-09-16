@@ -58,7 +58,9 @@ export const MobileContainer = ({
         <div className="h-full w-full flex justify-center items-center">
           <Spin tip="Loading..." />
         </div>
-      ) : user || router.pathname === "/sign-in" ? (
+      ) : user ||
+        router.pathname === "/sign-in" ||
+        router.pathname === "/sign-up" ? (
         children
       ) : (
         <div className="h-full w-full flex flex-col items-center justify-start pt-5">
